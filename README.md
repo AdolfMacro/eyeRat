@@ -1,9 +1,9 @@
-## EyeRat :tw-1f42d:
+## EyeRat 🐁
 ### Options :
 
-- Voice recording  :tw-1f3a4:
+- Voice recording 🎤
 - Take photos 📷
-- Live stream from camera :tw-1f3a5:
+- Live stream from camera 👀
 - Take screenshot 🖼️
 - File explorer 📁
 - CLI remote command shell 🚀
@@ -180,7 +180,7 @@ Now the usage menu and commands open, you can use them according to your needs.
 
 --------
 
-#### Upcoming update schedule :tw-1f331: :
+#### Upcoming update schedule 🌱 :
 - **Transfer to graphical environment.**
 
 - **Optimization of TCP connections.**
