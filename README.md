@@ -1,4 +1,4 @@
-## EyeRat     :tw-1f42d:
+## EyeRat :tw-1f42d:
 ### Options :
 
 - Voice recording  :tw-1f3a4:
@@ -11,7 +11,7 @@
 - Other ...
 -------
 ###  Dependencies :
-####Libraries :
+#### Libraries :
 - socket
 - openCV
 - pyaudio
