@@ -10,7 +10,7 @@
 - Make custom popup box 📦
 - Other ...
 -------
-### Dependencies :
+###  Dependencies :
 ####Libraries :
 - socket
 - openCV
