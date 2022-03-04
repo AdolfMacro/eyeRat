@@ -42,8 +42,7 @@ def main():
    (___._/  \_.___) `-.________________________________________.-'          
 
                  {Fore.RED}[ {Fore.CYAN}1 {Fore.RED}]{Fore.CYAN}Client launcher{Fore.RED}    [ {Fore.CYAN}2 {Fore.RED}] {Fore.CYAN}Rat Generator
-                                                                            
-                 {Fore.RED}[ {Fore.CYAN}3 {Fore.RED}]{Fore.CYAN} Help                          
+                                                                                                   
                   
                   
                   {Fore.LIGHTGREEN_EX}Enter your selection :{Fore.MAGENTA} """)
