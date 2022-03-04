@@ -31,6 +31,7 @@ The program generally has two parts, server and client.Whenever the user has an 
 
 1.Voice recording :
 
+
 Command :
 ```
 Rsound
@@ -47,6 +48,7 @@ First, we send the recording time to the server (target) through the socket conn
 
 2.Take photos :
 
+
 Command :
 ```
 Tpict
@@ -60,6 +62,8 @@ Receives the frame and converts it to numpy.array and finally saves it to image.
 
 
 3.Live stream :
+
+
 Command :
 ```
 Glive
@@ -73,6 +77,8 @@ This cycle continues as long as it is connected.
 Converts submitted frames to numpy.array and displays them one after the other.
 
 4.Take screenshot :
+
+
 Command :
 ```
 Tscr
@@ -85,6 +91,7 @@ Takes a screenshot using pyautogui.screenshot and converts it to numpy.array the
 Receives the frame and converts it to numpy.array and finally saves it to screenshot.jpg.
 
 5.File explorer :
+
 
 - Search in current path :
 Searches for current path files.
@@ -106,6 +113,8 @@ Uploads a file to the desired system (current path).
 
 
 6.CLI remote command shell :
+
+
 Command :
 ```
 RMCM
@@ -116,9 +125,11 @@ Execution of remote commands must be encrypted because firewalls and Windows Def
 This is why for every RAT that is created, a key is needed to decrypt / encrypt it.
 
 
-**NOTE : ** Try not to enter commands that cause the program to crash, for example: Commands that ask the user to enter something and such commands.
+**NOTE** : Try not to enter commands that cause the program to crash, for example: Commands that ask the user to enter something and such commands.
 
 7.Make custom popup box :
+
+
 
 - Alert window:
 Display a window with OK and Cancel buttons
@@ -134,7 +145,10 @@ A window to get the password from the user .
 
 8.Other :
 
+
 - Fun hacked alert :
+
+
 Command :
 ```
 HDalert
@@ -169,15 +183,15 @@ Now the usage menu and commands open, you can use them according to your needs.
 #### Upcoming update schedule :tw-1f331: :
 - **Transfer to graphical environment.**
 
-- ** Optimization of TCP connections. **
+- **Optimization of TCP connections.**
 
-- ** I will add the UDP connection option. **
+- **I will add the UDP connection option.**
 
-- **I will add the Reverse Connection feature. **
+- **I will add the Reverse Connection feature.**
 
-- ** I will add the ability to manage multiple RATs simultaneously. **
+- **I will add the ability to manage multiple RATs simultaneously.**
 
-- ** I will optimize the code .**
+- **I will optimize the code .**
 
 - **And  ...**
 
