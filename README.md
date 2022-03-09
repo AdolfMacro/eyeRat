@@ -181,7 +181,6 @@ Now the usage menu and commands open, you can use them according to your needs.
 --------
 
 #### Upcoming update schedule 🌱 :
-- **Transfer to graphical environment.**
 
 - **Optimization of TCP connections.**
 
