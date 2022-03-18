@@ -1,6 +1,6 @@
 from tools import generator
 from colorama import Back , Fore
-from tools import client
+from tools import launcher
 from os import system
 from platform import system as osType 
 from subprocess import getoutput
@@ -41,23 +41,32 @@ def main():
     ____)_/\_(____`.  `-._______________________________________.'/         
    (___._/  \_.___) `-.________________________________________.-'          
 
-                 {Fore.RED}[ {Fore.CYAN}1 {Fore.RED}]{Fore.CYAN}Client launcher{Fore.RED}    [ {Fore.CYAN}2 {Fore.RED}] {Fore.CYAN}Rat Generator
+                 {Fore.RED}[ {Fore.CYAN}1 {Fore.RED}]{Fore.CYAN}Client launcher{Fore.RED}    [ {Fore.CYAN}2 {Fore.RED}] {Fore.CYAN}Generate normal connection rat
                                                                                                    
-                  
+                 {Fore.RED}[ {Fore.CYAN}3 {Fore.RED}]{Fore.CYAN}Server launcher{Fore.RED}    [ {Fore.CYAN}4 {Fore.RED}] {Fore.CYAN}Generate reverse connection rat 
                   
                   {Fore.LIGHTGREEN_EX}Enter your selection :{Fore.MAGENTA} """)
   clear()
   if selection=='1':
     try:
-      client.main()
+      launcher.main("client")
     except KeyboardInterrupt:
       pass
   elif selection == '2':
     try:
-      generator.main()
+      generator.main("server")
     except KeyboardInterrupt:
       pass
-  
+  elif selection=='3':
+    try:
+      launcher.main("server")
+    except KeyboardInterrupt:
+      pass
+  elif selection == '4':
+    try:
+      generator.main("client")
+    except KeyboardInterrupt:
+      pass
 if __name__=='__main__':
   chdps()
   while 1:

