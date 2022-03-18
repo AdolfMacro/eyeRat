@@ -182,11 +182,7 @@ Now the usage menu and commands open, you can use them according to your needs.
 
 #### Upcoming update schedule 🌱 :
 
-- **Optimization of TCP connections.**
-
 - **I will add the UDP connection option.**
-
-- **I will add the Reverse Connection feature.**
 
 - **I will add the ability to manage multiple RATs simultaneously.**
 
