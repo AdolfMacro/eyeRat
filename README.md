@@ -179,6 +179,9 @@ Now you need to go to the client launcher section and enter the IP address and p
 Now the usage menu and commands open, you can use them according to your needs.
 
 --------
+The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Developers assume NO liability and are NOT responsible for any misuse or damage caused by this program.
+
+--------
 
 #### Upcoming update schedule 🌱 :
 
