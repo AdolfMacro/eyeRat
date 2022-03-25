@@ -8,10 +8,12 @@
 - File explorer 📁
 - CLI remote command shell 🚀
 - Make custom popup box 📦
+- R/W clipboard 📋
 - Other ...
 -------
 ###  Dependencies :
 #### Libraries :
+- clipboard
 - socket
 - openCV
 - pyaudio
