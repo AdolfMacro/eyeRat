@@ -180,6 +180,8 @@ Finally, the executable file must be executed on the target system.
 Now you need to go to the client launcher section and enter the IP address and port
 Now the usage menu and commands open, you can use them according to your needs.
 
+In version 1.0.0, there is no need to find the victim's IP and the tool can also be used as a reverse connection.
+
 --------
 The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Developers assume NO liability and are NOT responsible for any misuse or damage caused by this program.
 
