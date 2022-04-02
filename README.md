@@ -39,11 +39,11 @@ Command :
 Rsound
 ```
 
-- RAT01.recSound(connection):
-First set CHUNK to 1024 and RATE (fs variable) to 44,100 . It then receives the recording time from the client . Finally, it opens a stream and saves the frames in a list with a loop and sends the list items that are in bytes.
+- RAT.recSound(connection):
+First set CHUNK to 1024 and RATE (fs variable) to 44,100 . It then receives the recording time from the client/server . Finally, it opens a stream and saves the frames in a list with a loop and sends the list items that are in bytes.
 
 
- -  client.getSound(connection,time) :
+ -  .getSound(connection,time) :
 First, we send the recording time to the server (target) through the socket connection ; Then in the current path create a file called Voice.wav and set its [channel](https://www.wildlifeacoustics.com/resources/faqs/what-is-an-audio-channel "channel") to 2 , then we get [sampwidth](https://www.phonetik.uni-muenchen.de/forschung/BITS/TP1/Cookbook/node62.html "sampwidth") from the server (target) and finally, we receive and save the recorded audio frames from the target .
 
 
@@ -56,10 +56,10 @@ Command :
 Tpict
 ```
 
-- RAT01.getPict(connection):
+- RAT.getPict(connection):
 Reads a frame from camera number 0 using the vid object (cv2.VideoCapture (0)) .Converts it to list from numpy.array and then converts it to str using json.dumps.
 
-- client.getPict(connection):
+- .getPict(connection):
 Receives the frame and converts it to numpy.array and finally saves it to image.jpg.
 
 
@@ -71,11 +71,11 @@ Command :
 Glive
 ```
 
-- RAT01.live(connection) :
+- RAT.live(connection) :
 Reads frames from camera number 0 using the vid object (cv2.VideoCapture (0)). Converts it from numpy.array to list and then converts it to str using json.dumps and sends them.
 This cycle continues as long as it is connected.
 
-- client.getLive(connection) :
+- .getLive(connection) :
 Converts submitted frames to numpy.array and displays them one after the other.
 
 4.Take screenshot :
@@ -86,10 +86,10 @@ Command :
 Tscr
 ```
 
-- RAT01.takeScr(connection) :
+- RAT.takeScr(connection) :
 Takes a screenshot using pyautogui.screenshot and converts it to numpy.array then converts it to a list finally convert the list to str and send it.
 
-- client.getScr(connection) :
+- .getScr(connection) :
 Receives the frame and converts it to numpy.array and finally saves it to screenshot.jpg.
 
 5.File explorer :
