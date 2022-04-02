@@ -44,6 +44,8 @@ def main():
                  {Fore.RED}[ {Fore.CYAN}1 {Fore.RED}]{Fore.CYAN}Client launcher{Fore.RED}    [ {Fore.CYAN}2 {Fore.RED}] {Fore.CYAN}Generate normal connection rat
                                                                                                    
                  {Fore.RED}[ {Fore.CYAN}3 {Fore.RED}]{Fore.CYAN}Server launcher{Fore.RED}    [ {Fore.CYAN}4 {Fore.RED}] {Fore.CYAN}Generate reverse connection rat 
+
+                 {Fore.RED}[ {Fore.CYAN}5 {Fore.RED}] {Fore.CYAN}Developer information
                   
                   {Fore.LIGHTGREEN_EX}Enter your selection :{Fore.MAGENTA} """)
   clear()
@@ -67,6 +69,21 @@ def main():
       generator.main("client")
     except KeyboardInterrupt:
       pass
+  elif selection=='5':
+    input("""
+      _---~~(~~-_.
+    _{        )   )         
+  ,   ) -~~- ( ,-' )_       Hi, I'm Mani
+ (  `-,_..`., )-- '_,)      You can get my complete information from this site:
+( ` _)  (  -~( -_ `,  }     https://adolfmacro.github.io/mani/
+(_-  _  ~_-~~~~`,  ,' )     
+  `~ -^(    __;-,((()))     My GitHub Address: https://github.com/adolfmacro
+        ~~~~ {_ -_(())      E-mail : m4nikamran@gmail.com
+               `\  }        Telegram : https://t.me/manikamran
+                 { }      
+    
+    
+    Enter to exit : """)
 if __name__=='__main__':
   chdps()
   while 1:
