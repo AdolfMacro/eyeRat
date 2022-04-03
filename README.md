@@ -169,6 +169,14 @@ git clone https://github.com/AdolfMacro/eyeRat.git
 cd eyeRat
 python3 eyeRat.py
 ```
+### Installation(linux) :
+#### How to install on **Linux**:
+```
+git clone https://github.com/AdolfMacro/eyeRat.git
+cd eyeRat/tools/
+sudo python3 installer.py
+```
+Don't forget sudo
 
 -------
 
