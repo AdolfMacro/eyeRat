@@ -186,6 +186,15 @@ In version 1.0.0, there is no need to find the victim's IP and the tool can also
 The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Developers assume NO liability and are NOT responsible for any misuse or damage caused by this program.
 
 --------
+### Screenshots :
+![menu1](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/1.jpg?raw=true)
+
+
+![menu2](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/2.jpg?raw=true)
+
+
+![menu3](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/3.jpg?raw=true)
+--------
 
 #### Upcoming update schedule 🌱 :
 
