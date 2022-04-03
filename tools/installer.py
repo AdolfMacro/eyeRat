@@ -2,7 +2,7 @@ from os import system ,getcwd
 from colorama import Fore
 from platform import system as osName
 from subprocess import getoutput
-
+from sys import path
 nsPkgs=[]
 try:
     import cv2
@@ -45,9 +45,16 @@ if selection=='1':
         for j in nsPkgs:
             system(f"pip3 install {i}")
 elif selection=='2':
-    errcode = system("sudo mkdir /usr/src/eyerat/")
+    errcode = system("mkdir /usr/src/eyerat/")
     pathF="/usr/src/eyerat/"
-    path=getcwd().replace("tools","")
-    system(f"sudo cp -R {path}/* {pathF}")
-    system(f"sudo echo 'python3 {pathF}eyeRat.py' > /usr/local/bin/eyerat")
-    system(f"sudo chmod +x /usr/local/bin/eyerat")
+    system(f"cp {path[0].replace('tools','')}/eyeRat.py {pathF} ; cp -R {path[0]} {pathF}")
+    system(f"echo 'python3 {pathF}eyeRat.py' > /usr/local/bin/eyerat")
+    system("chmod +x /usr/local/bin/eyerat")
+print("""
+██████╗  ██████╗ ███╗   ██╗███████╗
+██╔══██╗██╔═══██╗████╗  ██║██╔════╝
+██║  ██║██║   ██║██╔██╗ ██║█████╗  
+██║  ██║██║   ██║██║╚██╗██║██╔══╝  
+██████╔╝╚██████╔╝██║ ╚████║███████╗
+╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
+""")

