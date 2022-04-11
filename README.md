@@ -36,7 +36,7 @@
 -------
 ### How it works :
 #### General description :
-The program generally has two parts, server and client.Whenever the user has an instruction to send to the server (target), the client program sends a specific command such as: Tpict (to receive a photo from the camera) to the server (target).After receiving the command, a function is executed to execute the user command on the victim system.  At the same time, a function on the client (user) side begins to receive server information and display or store it .
+This program generally has two parts RAT and user side program. Whenever the user has an instruction to send to RAT, the user's application sends a special command to RAT such as: Tpict (to take a photo from the camera). After receiving the command, a function is executed to execute the user command in the victim system. At the same time, a user-side function starts receiving server information and displaying or saving it.
 
 #### Code description :
 
