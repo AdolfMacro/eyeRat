@@ -183,9 +183,9 @@ python3 eyeRat.py
 ```
 git clone https://github.com/AdolfMacro/eyeRat.git
 cd eyeRat/tools/
-sudo python3 installer.py
+bash installer.sh
 ```
-Don't forget sudo
+**Please run with normal user (do not run with root user)**
 
 -------
 
