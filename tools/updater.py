@@ -15,8 +15,8 @@ def mainUpdater():
             return
         WtUpDate=input(f"{Fore.LIGHTRED_EX}Your version is not up to date!\n\nDo you want to be updated [y/n]? : {Fore.RESET}").lower()
         if WtUpDate=='y':
-            chdir("/usr/src/eyerat/")
-            system("git pull --rebase")
+            chdir(__file__.replace("updater.py",""))
+            system("bash updater.sh")
         else :
             input(f"{Fore.LIGHTCYAN_EX}\n\nEnter to continue : {Fore.RESET}")
     else :
