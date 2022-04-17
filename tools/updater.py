@@ -5,15 +5,15 @@ from os import system , chdir
 def mainUpdater():
     UPtDATE=None
     vsersionNum=get("https://raw.githubusercontent.com/AdolfMacro/eyeRat/main/VERSION.txt").text
-    if not vsersionNum==open("VERSION.txt",'r').read():
+    if not vsersionNum==open(f'{__file__.replace("tools/updater.py","")}VERSION.txt','r').read():
         UPtDATE=False
     else :
         UPtDATE=True
     if isfile("/usr/src/eyerat/VERSION.txt"):
         if UPtDATE:
             input(f"{Fore.LIGHTGREEN_EX}Your version is up to date!\n\nEnter to continue : {Fore.RESET}")
-        else :
-            WtUpDate=input(f"{Fore.LIGHTRED_EX}Your version is not up to date!\n\nDo you want to be updated [y/n]? : {Fore.RESET}").lower()
+            return
+        WtUpDate=input(f"{Fore.LIGHTRED_EX}Your version is not up to date!\n\nDo you want to be updated [y/n]? : {Fore.RESET}").lower()
         if WtUpDate=='y':
             chdir("/usr/src/eyerat/")
             system("git pull --rebase")
