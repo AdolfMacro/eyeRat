@@ -96,6 +96,6 @@ while 1:
         system(f"pyinstaller --onefile pyRAT.pyw")
         clear()
         chdir(currPath)
-        input(f"{rgb(0,255,0)}[ * ] Done (The executable file for {OStype} is located in the /dist path)! \n\nEnter to continue : {Fore.RESET}")
+        input(f"{rgb(0,255,0)}[ * ] Done (The executable file for {OStype()} is located in the /dist path)! \n\nEnter to continue : {Fore.RESET}")
     elif selection=='2':
         return 1
