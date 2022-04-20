@@ -204,7 +204,7 @@ The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Dev
 
 --------
 ### Screenshots :
-![menu1](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/1.jpg?raw=true)
+![menu1](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/1.png?raw=true)
 
 
 ![menu2](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/2.jpg?raw=true)
