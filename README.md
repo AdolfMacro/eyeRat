@@ -53,7 +53,7 @@ First set CHUNK to 1024 and RATE (fs variable) to 44,100 . It then receives the 
 
 
  -  .getSound(connection,time) :
-First, we send the recording time to the server (target) through the socket connection ; Then in the current path create a file called Voice.wav and set its [channel](https://www.wildlifeacoustics.com/resources/faqs/what-is-an-audio-channel "channel") to 2 , then we get [sampwidth](https://www.phonetik.uni-muenchen.de/forschung/BITS/TP1/Cookbook/node62.html "sampwidth") from the client/server (target) and finally, we receive and save the recorded audio frames from the target .
+First, we send the recording time to the client/server (target) through the socket connection ; Then in the current path create a file called Voice.wav and set its [channel](https://www.wildlifeacoustics.com/resources/faqs/what-is-an-audio-channel "channel") to 2 , then we get [sampwidth](https://www.phonetik.uni-muenchen.de/forschung/BITS/TP1/Cookbook/node62.html "sampwidth") from the client/server (target) and finally, we receive and save the recorded audio frames from the target .
 
 
 
@@ -164,7 +164,7 @@ Command :
 ```
 HDalert
 ```
-This section receives a photo from the user and sends it to the server (target) (like the frame sending methods described earlier).
+This section receives a photo from the user and sends it to the client/server (target) (like the frame sending methods described earlier).
 The RAT then opens the image 1000 times in different windows and the victim system crashes.
 
 - Target system info :
