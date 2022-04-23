@@ -36,7 +36,7 @@
 -------
 ### How it works :
 #### General description :
-This program generally has two parts RAT and user side program. Whenever the user has an instruction to send to RAT, the user's application sends a special command to RAT such as: Tpict (to take a photo from the camera). After receiving the command, a function is executed to execute the user command in the victim system. At the same time, a user-side function starts receiving server information and displaying or saving it.
+This program generally has two parts RAT and user side program. Whenever the user has an instruction to send to RAT, the user's application sends a special command to RAT such as: Tpict (to take a photo from the camera). After receiving the command, a function is executed to execute the user command in the victim system. At the same time, a user-side function starts receiving client/server information and displaying or saving it.
 
 #### Code description :
 
@@ -53,7 +53,7 @@ First set CHUNK to 1024 and RATE (fs variable) to 44,100 . It then receives the 
 
 
  -  .getSound(connection,time) :
-First, we send the recording time to the server (target) through the socket connection ; Then in the current path create a file called Voice.wav and set its [channel](https://www.wildlifeacoustics.com/resources/faqs/what-is-an-audio-channel "channel") to 2 , then we get [sampwidth](https://www.phonetik.uni-muenchen.de/forschung/BITS/TP1/Cookbook/node62.html "sampwidth") from the server (target) and finally, we receive and save the recorded audio frames from the target .
+First, we send the recording time to the server (target) through the socket connection ; Then in the current path create a file called Voice.wav and set its [channel](https://www.wildlifeacoustics.com/resources/faqs/what-is-an-audio-channel "channel") to 2 , then we get [sampwidth](https://www.phonetik.uni-muenchen.de/forschung/BITS/TP1/Cookbook/node62.html "sampwidth") from the client/server (target) and finally, we receive and save the recorded audio frames from the target .
 
 
 
