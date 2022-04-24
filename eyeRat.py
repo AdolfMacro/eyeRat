@@ -5,7 +5,7 @@ from os import system
 from platform import system as osType 
 from subprocess import getoutput
 def chdps():
-  QModules=['opencv','numpy','pyautogui','cryptography','pymsgbox','pillow','psutil','colorama']
+  QModules=['opencv','numpy','pyautogui','pyaudio','cryptography','pymsgbox','pillow','psutil','colorama','pyinstaller']
   ntInstall=[]
   pipList=getoutput(("pip list")).lower()
   for pkg in QModules:
