@@ -8,7 +8,7 @@ from subprocess import getoutput
 from os.path import isfile
 from requests import get
 def chdps():
-  QModules=['opencv','numpy','pyaudio','pyautogui','cryptography','pymsgbox','pillow','psutil','colorama']
+  QModules=['opencv','numpy','pyautogui','pyaudio','cryptography','pymsgbox','pillow','psutil','colorama','pyinstaller']
   ntInstall=[]
   pipList=getoutput(("pip list")).lower()
   for pkg in QModules:
