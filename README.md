@@ -33,6 +33,7 @@
 - psutil
 - wave
 - colorama
+- pyinstaller
 -------
 ### How it works :
 #### General description :
