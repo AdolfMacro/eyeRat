@@ -18,6 +18,7 @@
 - CLI remote command shell 🚀
 - Make custom popup box 📦
 - R/W clipboard 📋
+- Manage multiple RATs
 - Other ...
 -------
 ###  Dependencies :
@@ -217,8 +218,6 @@ The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Dev
 #### Upcoming update schedule 🌱 :
 
 - **I will add the UDP connection option.**
-
-- **I will add the ability to manage multiple RATs simultaneously.**
 
 - **I will optimize the code .**
 
