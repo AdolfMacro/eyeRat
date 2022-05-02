@@ -213,6 +213,12 @@ The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Dev
 
 
 ![menu3](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/3.jpg?raw=true)
+
+
+![menu4](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/4.png?raw=true)
+
+
+![menu5](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/5.png?raw=true)
 --------
 
 #### Upcoming update schedule 🌱 :
