@@ -1,7 +1,7 @@
 import socket
 from PIL import Image
 import cv2
-from numpy import array 
+from numpy import array
 import numpy as np
 from json import loads,dumps,JSONDecodeError
 import wave
@@ -277,17 +277,15 @@ def getFex(sock):
     elif slcn=="5" or slcn=='4':
         buffer = 4096
         if slcn=='4':
-            path="4FXdwn:"
+            extn="4FXdwn:"
         else :
-            path="FXdwn:"
-        path+=input(f"{Fore.MAGENTA}Enter the file path : {Fore.RESET}")
+            extn="FXdwn:"
+        path=extn+input(f"{Fore.MAGENTA}Enter the file path : {Fore.RESET}")
         sock.send(path.encode())
         if '\\' in path:
-            filename=path.split("\\")
-            filename=filename[len(filename)-1]
+            filename=extn+path.split("\\")[-1]
         elif '/' in path:
-            filename=path.split("/")
-            filename=filename[len(filename)-1]
+            filename=extn+path.split("/")[-1]
         else : 
             filename=path
         if slcn=='5':
