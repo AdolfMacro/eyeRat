@@ -18,7 +18,7 @@
 - CLI remote command shell 🚀
 - Make custom popup box 📦
 - R/W clipboard 📋
-- Manage multiple RATs
+- Manage multiple RATs 🌱
 - Other ...
 -------
 ###  Dependencies :
