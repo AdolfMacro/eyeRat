@@ -7,6 +7,7 @@ from platform import system as osType
 from subprocess import getoutput
 from os.path import isfile
 from requests import get
+from tools.MNLauncher import main as miniRats
 def chdps():
   QModules=['opencv','numpy','pyautogui','pyaudio','cryptography','pymsgbox','pillow','psutil','colorama','pyinstaller']
   ntInstall=[]
@@ -48,7 +49,9 @@ def main():
                                                                                                    
                  {Fore.RED}[ {Fore.CYAN}3 {Fore.RED}]{Fore.CYAN}Server launcher(Multiple clients){Fore.RED}    [ {Fore.CYAN}4 {Fore.RED}] {Fore.CYAN}Generate reverse connection rat 
 
-                 {Fore.RED}[ {Fore.CYAN}5 {Fore.RED}] {Fore.CYAN}Developer information{Fore.RED}               [ {Fore.CYAN}6 {Fore.RED}] {Fore.CYAN}Check for updates
+                 {Fore.RED}[ {Fore.CYAN}5 {Fore.RED}] {Fore.CYAN}Mini Rats{Fore.RED}                           [ {Fore.CYAN}6 {Fore.RED}] {Fore.CYAN}Developer information
+                 
+                 {Fore.RED}[ {Fore.CYAN}7 {Fore.RED}] {Fore.CYAN}Check for updates
                   
                   {Fore.LIGHTGREEN_EX}Enter your selection :{Fore.MAGENTA} """)
   clear()
@@ -59,7 +62,7 @@ def main():
       pass
   elif selection == '2':
     try:
-      generator.main("server")
+      generator.main("server",None)
     except KeyboardInterrupt:
       pass
   elif selection=='3':
@@ -69,10 +72,15 @@ def main():
       pass
   elif selection == '4':
     try:
-      generator.main("client")
+      generator.main("client",None)
     except KeyboardInterrupt:
       pass
-  elif selection=='5':
+  elif selection=="5":
+    try:
+      miniRats()
+    except KeyboardInterrupt:
+      pass
+  elif selection=='6':
     input("""
       _---~~(~~-_.
     _{        )   )         
@@ -87,7 +95,7 @@ def main():
     
     
     Enter to exit : """)
-  elif selection=="6":
+  elif selection=="7":
     updater.mainUpdater()
 if __name__=='__main__':
   chdps()

