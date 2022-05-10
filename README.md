@@ -174,6 +174,24 @@ Receives and displays some victim system information.
 
 -------
 
+### What is a MiniRat ?
+
+Due to the large size of the rat.py file in version v1.1.1, I decided to split the rat.py file into smaller sections and consider a launcher for each one separately (the size of these rats has been reduced to 20M).
+
+When you enter the 5 tools section (mini-rat section), you will enter the mini-rats menu by selecting the first option.
+
+In this menu, you will see the following options :
+
+
+SpyRat : By selecting this option, you will enter a submenu that lists small rats that have spy mode. You can select and generate one according to your needs.
+
+CMD rat : This rat only performs the Remote command shell operation .
+
+PoPuP rat : This rat only allows you to create PoPuP windows
+
+Fun Rat : Allows you to access options such as fun hacked alert and target system info.
+
+-------
 ### Usage :
 ```
 git clone https://github.com/AdolfMacro/eyeRat.git
@@ -219,6 +237,8 @@ The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Dev
 
 
 ![menu5](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/5.png?raw=true)
+
+![menu6](https://github.com/AdolfMacro/eyeRat/blob/main/screenshots/6.png?raw=true)
 --------
 
 #### Upcoming update schedule 🌱 :
