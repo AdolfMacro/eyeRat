@@ -8,6 +8,24 @@
 
 
 ## EyeRat 🐁
+
+---
+
+### Contents :
+* [Options](https://github.com/AdolfMacro/eyeRat#options-)
+* [Dependencies](https://github.com/AdolfMacro/eyeRat#dependencies-)
+* [How it works ?](https://github.com/AdolfMacro/eyeRat#how-it-works-)
+  * [General description](https://github.com/AdolfMacro/eyeRat#general-description-)
+  * [Code description](https://github.com/AdolfMacro/eyeRat#code-description-)
+* [What is a MiniRat ?](https://github.com/AdolfMacro/eyeRat#what-is-a-minirat-)
+* [Usage](https://github.com/AdolfMacro/eyeRat#usage-)
+* [Installation(linux)](https://github.com/AdolfMacro/eyeRat#installationlinux-)
+* [General instructions for use](https://github.com/AdolfMacro/eyeRat#general-instructions-for-use)
+* [Screenshots](https://github.com/AdolfMacro/eyeRat#screenshots-)
+* [Upcoming update schedule](https://github.com/AdolfMacro/eyeRat#upcoming-update-schedule--)
+
+---
+
 ### Options :
 
 - Voice recording 🎤
@@ -198,6 +216,8 @@ git clone https://github.com/AdolfMacro/eyeRat.git
 cd eyeRat
 python3 eyeRat.py
 ```
+------
+
 ### Installation(linux) :
 #### How to install on **Linux**:
 ```
