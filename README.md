@@ -7,7 +7,7 @@
 </p>
 
 
-## EyeRat 🐁
+## EyeRat :shipit:
 
 ---
 
@@ -263,9 +263,9 @@ The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Dev
 
 #### Upcoming update schedule 🌱 :
 
-- **I will add the UDP connection option.**
+- [ ] **UDP connection .**
 
-- **I will optimize the code .**
+- [ ] **Code optimization .**
 
 - **And  ...**
 
