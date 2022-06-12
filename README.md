@@ -23,7 +23,7 @@
 * [General instructions for use](https://github.com/AdolfMacro/eyeRat#general-instructions-for-use)
 * [Screenshots](https://github.com/AdolfMacro/eyeRat#screenshots-)
 * [Upcoming update schedule](https://github.com/AdolfMacro/eyeRat#upcoming-update-schedule--)
-* [Donate](https://github.com/AdolfMacro/eyeRat/edit/main/README.md#donate-)
+* [Donate](https://github.com/AdolfMacro/eyeRat/#donate-)
 
 ---
 
