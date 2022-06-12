@@ -23,6 +23,7 @@
 * [General instructions for use](https://github.com/AdolfMacro/eyeRat#general-instructions-for-use)
 * [Screenshots](https://github.com/AdolfMacro/eyeRat#screenshots-)
 * [Upcoming update schedule](https://github.com/AdolfMacro/eyeRat#upcoming-update-schedule--)
+* [Donate](https://github.com/AdolfMacro/eyeRat/edit/main/README.md#donate-)
 
 ---
 
@@ -265,6 +266,42 @@ In version 1.0.0, there is no need to find the victim's IP and the tool can also
 - [ ] **Code optimization .**
 
 - **And  ...**
+
+
+------
+
+### Donate :
+
+<p>
+  <img 
+    width="130"
+    height="25"
+    src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Bitcoin_logo.svg/1920px-Bitcoin_logo.svg.png"
+  >
+</p>
+
+BTC : bc1qyfargh3pvfuj8dha0a3nlcdc9qu08wr2ymuvls
+
+
+<p>
+  <img 
+    width="130"
+    height="35"
+    src="https://magazine4you.ir/en/wp-content/uploads/2022/04/ethereum-logo-long.png"
+  >
+</p>
+
+ETH : 0xD96CEdf36bA9E71C1dbc63eD3Ae3749226978d18
+
+<p>
+  <img 
+    width="130"
+    height="35"
+    src="https://www.nicepng.com/png/full/308-3087899_banner2-dogecoin-the-ultimate-beginners-guide-for-understanding.png"
+  >
+</p>
+
+Dogecoin : DGYnqWEEyhSkeeHtxWsZiSgPxBVsaS6eJm
 
 ------
 
