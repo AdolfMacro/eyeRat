@@ -83,6 +83,8 @@ def main():
     conn,addr=sock.accept()
     while 1:
         command=conn.recv(1024).decode()
+        if not command :
+            break
         commandRunner(conn,command,key)
 while 1:
     try:
