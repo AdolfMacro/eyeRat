@@ -25,17 +25,7 @@ def clear():
         system("cls")
     else :
         system("clear")
-def msgs():
-  clear()
-  msg=f"{Fore.LIGHTGREEN_EX}Be {Fore.LIGHTWHITE_EX}our {Fore.LIGHTRED_EX}voice 🇮🇷\n{Fore.GREEN}#opIRAN  {Fore.LIGHTWHITE_EX}#free_jadi  {Fore.LIGHTRED_EX}#mahsaamini\n\n{Fore.LIGHTCYAN_EX}-Adolf Macro"
-  buff=""
-  for i in msg:
-    clear()
-    buff+=i
-    print(buff)
-    sleep(0.1)
 def main():
-  msgs()
   sleep(3)
   clear()
   selection=input(f"""
