@@ -1,4 +1,3 @@
-from importlib_metadata import version
 from time import sleep
 from tools import generator,updater
 from colorama import Back , Fore
