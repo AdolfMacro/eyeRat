@@ -4,7 +4,11 @@ from requests import get
 from os import system , chdir
 def mainUpdater():
     UPtDATE=None
-    vsersionNum=get("https://raw.githubusercontent.com/AdolfMacro/eyeRat/main/VERSION.txt").text
+    try :
+        vsersionNum=get("https://raw.githubusercontent.com/AdolfMacro/eyeRat/main/VERSION.txt").text
+    except exceptions.ConnectionError : 
+        print(f"{Fore.RED}[*] Connection Error !") 
+        return 1
     if not vsersionNum==open(f'{__file__.replace("tools/updater.py","")}VERSION.txt','r').read():
         UPtDATE=False
     else :
