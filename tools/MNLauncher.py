@@ -1,74 +1,82 @@
 from colorama import Fore
-from sys import path
-path.append(__file__.replace("MNLauncher.py",""))
-from generator import main as generator
 from platform import system as osType
 from os import system
-def help():
-    pass
+from pathlib import Path
+from .generator import main as generator
+
+
+BASE_DIR = Path(__file__).parent
+
+
 def clear():
     if "windows" in osType().lower():
         system("cls")
-    else :
+    else:
         system("clear")
+
+
+def help():
+    pass
+
+
 def main():
-    while 1:
+    while True:
         clear()
-        selectionMode=input(f"""{Fore.LIGHTGREEN_EX}
+        selectionMode = input(f"""{Fore.LIGHTGREEN_EX}
    __________________________________________
- / \                                         \.
-|   |                [ Menu ]                |.
- \_ |                                        |.
-    | [ 1 ] Generate new MiniRat             |.
-    |                                        |.
-    |                                        |.
-    | [ 2 ] Exit                             |.
-    |                                        |.
-    |                                        |.
-    |                                        |.
-    |   _____________________________________/
-    |  /                                     |.
-    \_/______________________________________/.
-    
-    Enter your selection : {Fore.RESET}""")
-        if selectionMode=='1':
+  / \                                         \.
+ |   |                [ Menu ]                |.
+  \_ |                                        |.
+     | [ 1 ] Generate new MiniRat             |.
+     |                                        |.
+     |                                        |.
+     | [ 2 ] Exit                             |.
+     |                                        |.
+     |                                        |.
+     |                                        |.
+     |   _____________________________________/
+     |  /                                     |.
+     \_/______________________________________/.
+     
+     Enter your selection : {Fore.RESET}""")
+        if selectionMode == '1':
             clear()
-            selection=input(f"""{Fore.LIGHTRED_EX}
+            selection = input(f"""{Fore.LIGHTRED_EX}
        __          ___
       // )    ___""    "-.
- \ |,"( /`--""            `.    
-  \/ o                      \   {Fore.LIGHTGREEN_EX}  ╔╦╗┬┌┐┌┬  ╦═╗┌─┐┌┬┐┌─┐{Fore.LIGHTRED_EX}
-  (   _.-.            ,'"    ;  {Fore.LIGHTGREEN_EX}  ║║║│││││  ╠╦╝├─┤ │ └─┐{Fore.LIGHTRED_EX}
-   |\"   /`. \  ,     /       |  {Fore.LIGHTGREEN_EX}  ╩ ╩┴┘└┘┴  ╩╚═┴ ┴ ┴ └─┘{Fore.LIGHTRED_EX}
-   | \  ' .'`.; |    |       \.______________________________
-     _-'.'    | |--..,\_    \________------------\"\"\"\"\"\"\"\"\"\"\"\"
-    '''\"   _-'.'       ___\"-   )
-          \'\'\'\"        \'\'\'---~\"\"{Fore.LIGHTYELLOW_EX}
-        
-        [ 1 ] Spy rat              [ 2 ] CMD rat
+   \ |,"( /`--""            `.    
+    \/ o                      \   {Fore.LIGHTGREEN_EX}  ╔╦╗┬┌┐┌┬  ╦═╗┌─┐┌┬┐┌─┐{Fore.LIGHTRED_EX}
+    (   _.-.            ,'"    ;  {Fore.LIGHTGREEN_EX}  ║║║│││││  ╠╦╝├─┤ │ └─┐{Fore.LIGHTRED_EX}
+     |"   /`. \  ,     /       |  {Fore.LIGHTGREEN_EX}  ╩ ╩┴┘└┘┴  ╩╚═┴ ┴ ┴ └─┘{Fore.LIGHTRED_EX}
+     | \  ' .'`.; |    |       \.______________________________
+      _-'.'    | |--..,\_    \________------------\"\"\"\"\"\"\"\"\"\"\"
+     '''\"   _-'.'       ___\"-   )
+           \'\'\'\"        \'\'\'---~\"\"{Fore.LIGHTYELLOW_EX}
+         
+         [ 1 ] Spy rat              [ 2 ] CMD rat
 
-        [ 3 ] PoPuP rat            [ 4 ] Fun Rat
+         [ 3 ] PoPuP rat            [ 4 ] Fun Rat
 
-        [ 5 ] Exit
-    
-        Enter your selection : {Fore.RESET}""")
-            mode=''
+         [ 5 ] Exit
+     
+         Enter your selection : {Fore.RESET}""")
+            mode = ''
             try:
-                if int(selection)<=4 and int(selection)>=1:
-                    while 1:
+                if int(selection) <= 4 and int(selection) >= 1:
+                    while True:
                         clear()
-                        modeNum=input(f"{Fore.LIGHTYELLOW_EX}       [ 1 ] Normal connection rat\n\n       [ 2 ] reverse connection rat \n\n       Enter your selection : {Fore.RESET}")
-                        if modeNum=='1':
-                            mode="server"
+                        modeNum = input(f"{Fore.LIGHTYELLOW_EX}       [ 1 ] Normal connection rat\n\n       [ 2 ] reverse connection rat \n\n       Enter your selection : {Fore.RESET}")
+                        if modeNum == '1':
+                            mode = "server"
                             break
-                        elif modeNum=='2':
-                            mode="client"
+                        elif modeNum == '2':
+                            mode = "client"
                             break
             except ValueError:
                 pass
-            if selection=='1':
+            if selection == '1':
                 clear()
-                spyRatNum=input(f"""{Fore.LIGHTYELLOW_EX}
+                spyRatNum = input(f"""{Fore.LIGHTYELLOW_EX}
                         ┌                   ┐
                         │ ■ Voice recording │
                         │ ■ Live            │
@@ -88,19 +96,19 @@ def main():
                         │ ■ File explorer   │
                         └                   ┘
         Enter your selection : {Fore.RESET}""")
-                if spyRatNum=="1":
-                    generator(mode, f'{__file__.replace("MNLauncher.py","")}RATS/miniRats/spyRats/spyRat1.py')
-                if spyRatNum=="2":
-                    generator(mode, f'{__file__.replace("MNLauncher.py","")}RATS/miniRats/spyRats/spyRat2.py')
-                if spyRatNum=="3":
-                    generator(mode, f'{__file__.replace("MNLauncher.py","")}RATS/miniRats/spyRats/spyRat3.py')
-            elif selection=='2':
-                generator(mode, f'{__file__.replace("MNLauncher.py","")}RATS/miniRats/files/cmdRat.py')
-            elif selection=='3':
-                generator(mode, f'{__file__.replace("MNLauncher.py","")}RATS/miniRats/files/popupRat.py')
-            elif selection=='4':
-                generator(mode, f'{__file__.replace("MNLauncher.py","")}RATS/miniRats/files/funRat.py')
-            elif selection=='5':
+                if spyRatNum == "1":
+                    generator(mode, f'{str(BASE_DIR / "RATS" / "miniRats" / "spyRats" / "spyRat1.py")}')
+                if spyRatNum == "2":
+                    generator(mode, f'{str(BASE_DIR / "RATS" / "miniRats" / "spyRats" / "spyRat2.py")}')
+                if spyRatNum == "3":
+                    generator(mode, f'{str(BASE_DIR / "RATS" / "miniRats" / "spyRats" / "spyRat3.py")}')
+            elif selection == '2':
+                generator(mode, f'{str(BASE_DIR / "RATS" / "miniRats" / "files" / "cmdRat.py")}')
+            elif selection == '3':
+                generator(mode, f'{str(BASE_DIR / "RATS" / "miniRats" / "files" / "popupRat.py")}')
+            elif selection == '4':
+                generator(mode, f'{str(BASE_DIR / "RATS" / "miniRats" / "files" / "funRat.py")}')
+            elif selection == '5':
                 break
-        elif selectionMode=='2':
+        elif selectionMode == '2':
             break
