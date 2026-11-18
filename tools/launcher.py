@@ -564,6 +564,7 @@ def main(mode):
     addrs = ""
     GratMenu = 1
     for i in range(len(rats)):
+        addrs += f"\n\n[ {i+1} ] {rats[i][1][0]}:{rats[i][1][1]}"
     while 1:
         clear()
         if MLmode == 'y' and GratMenu:

