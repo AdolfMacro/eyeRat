@@ -1,41 +1,22 @@
-echo -E """
-         ___           _        _ _           
-        |_ _|_ __  ___| |_ __ _| | | ___ _ __ 
-         | || '_ \/ __| __/ _\` | | |/ _ \ '__|
-         | || | | \__ \ || (_| | | |  __/ |   
-        |___|_| |_|___/\__\__,_|_|_|\___|_|
-        _____________________________________
-    Installer for eyeRat tool , Start installation
-    
+#!/bin/bash
+echo "Installing eyeRat..."
 
-"""
-pip install clipboard
-pip install opencv-python
-pip install PyAudio
-pip install PyAutoGUI
-pip install cryptography
-pip install PyMsgBox
-pip install Pillow
-pip install psutil
-pip install colorama
-sudo -u root mkdir /usr/src/eyerat/
-line="$0"
-replace="/tools/installer.sh"
-replacewith=""
-temp=$( realpath "$0"  )
-line=$(dirname "$temp")
-replace="/tools"
-replacewith=""
-line="${line/${replace}/${replacewith}}"
-echo $line
-sudo -u root cp -R $line/* /usr/src/eyerat/
-sudo sh -c 'echo "python3 /usr/src/eyerat/eyeRat.py" > /usr/local/bin/eyerat'
+python3 -m venv /usr/src/eyerat/venv
+/usr/src/eyerat/venv/bin/pip install --quiet clipboard opencv-python PyAudio PyAutoGUI cryptography PyMsgBox Pillow psutil colorama pyinstaller
+
+sudo -u root mkdir -p /usr/src/eyerat/
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
+
+echo "$PROJECT_DIR"
+
+sudo -u root cp -R "$PROJECT_DIR"/* /usr/src/eyerat/
+
+sudo bash -c 'echo "#!/bin/bash
+source /usr/src/eyerat/venv/bin/activate
+python3 /usr/src/eyerat/eyeRat.py" > /usr/local/bin/eyerat'
 sudo -u root chmod +x /usr/local/bin/eyerat
-echo """
-██████╗  ██████╗ ███╗   ██╗███████╗
-██╔══██╗██╔═══██╗████╗  ██║██╔════╝
-██║  ██║██║   ██║██╔██╗ ██║█████╗  
-██║  ██║██║   ██║██║╚██╗██║██╔══╝  
-██████╔╝╚██████╔╝██║ ╚████║███████╗
-╚═════╝  ╚═════╝ ╚═╝  ╚═══╝╚══════╝
-"""
+
+echo "Installation complete!"
+echo "Run the tool with: eyerat"

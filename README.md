@@ -268,4 +268,17 @@ In version 1.0.0, there is no need to find the victim's IP and the tool can also
 - **And  ...**
 ------
 
+#### Recent bug fixes & improvements (v1.2.0) :
+
+- Fix network/connection errors: no more "Connection lost !", BrokenPipeError, or timed-out errors across client/server/handler/RAT components.
+- `command_runner` always sends `END` terminator after handling a command, even on exception — prevents protocol desynchronization.
+- `generator.py`: removed runtime `pip install` loop; replaced with PyInstaller `--hidden-import` flags; added `UnicodeDecodeError` handling with buffer-clear retry; reconnection loop; try/except with `traceback`; logging prints.
+- `launcher.py`: comprehensive try/except on all socket operations; `sendall` for bulk data; removed blocking `settimeout(10)`; path validation (`..` check).
+- `RAT.py` + miniRats: `sendall` for screenshots/photos/audio; `MemoryError` handling; image downscaling (640×480 screenshots, 1024px thumbnails).
+- `MNLauncher.py`: fixed undefined `mode` after `ValueError` → `if not mode: continue`.
+- Added `__init__.py` for all packages (`tools/`, `tools/RATS/`, `miniRats/`, `spyRats/`, `files/`).
+- Added `.gitignore` to exclude `__pycache__/`, `*.pyc`, `dist/`, `venv/`, editor files, and OS junk.
+
+------
+
 > The use of the eyeRat(all versions) COMPLETE RESPONSIBILITY of the END-USER. Developers assume NO liability and are NOT responsible for any misuse or damage caused by this program.

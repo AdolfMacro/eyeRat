@@ -15,10 +15,6 @@ def clear():
         system("clear")
 
 
-def help():
-    pass
-
-
 def main():
     while True:
         clear()
@@ -74,6 +70,8 @@ def main():
                             break
             except ValueError:
                 pass
+            if not mode:
+                continue
             if selection == '1':
                 clear()
                 spyRatNum = input(f"""{Fore.LIGHTYELLOW_EX}

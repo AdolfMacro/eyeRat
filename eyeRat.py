@@ -5,7 +5,6 @@ from tools import launcher
 from os import system
 from platform import system as osType
 from subprocess import getoutput
-from os.path import isfile
 from requests import get
 from tools.MNLauncher import main as miniRats
 

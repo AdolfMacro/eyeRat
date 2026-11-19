@@ -8,7 +8,6 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).parent.parent
 VERSION_FILE = BASE_DIR / "VERSION.txt"
-UPDATER_SCRIPT = BASE_DIR / "tools" / "updater.sh"
 
 
 def mainUpdater():

